@@ -5,16 +5,27 @@ class CircularDoublyLinkedList(object):
         self.size = 0
     
     def addToFront(self, value):
+        """
+        adds the node to the front of the list
+        """
         nextNode = Node(value, self.head.getNext(), self.head)
         if self.size > 0:
+            # set the node before the current next node
             self.head.getNext().setPrev(nextNode)
         else:
+            # set the node as both the next and previous node because there are
+            # no other nodes to be the previous
             self.head.setPrev(nextNode)
+        # set the node right after the head
         self.head.setNext(nextNode)
         self.size += 1
 
     def addToBack(self, value):
+        """
+        adds the node to the back of the list
+        """
         if self.size == 0:
+            # add to front must be used because there is no current previous node
             self.addToFront(value)
         else:
             nextNode = Node(value, self.head, self.head.getPrev())
@@ -23,6 +34,9 @@ class CircularDoublyLinkedList(object):
             self.size += 1
 
     def removeFromFront(self):
+        """
+        removes the node from the front of the list
+        """
         if self.size == 0:
             raise IndexError("the list is empty")
         newNext = self.head.getNext().getNext()
@@ -31,6 +45,9 @@ class CircularDoublyLinkedList(object):
         self.size -= 1
 
     def removeFromBack(self):
+        """
+        removes the node from the back of the list
+        """
         if self.size == 0:
             raise IndexError("the list is empty")
         newPrev = self.head.getPrev().getPrev()
@@ -39,6 +56,9 @@ class CircularDoublyLinkedList(object):
         self.size -= 1
 
     def insertAtIndex(self, index, value):
+        """
+        inserts the node at the specified index
+        """
         if index >= self.size:
             raise IndexError("index out of bounds")
         current = self._traverse(index)
@@ -48,6 +68,9 @@ class CircularDoublyLinkedList(object):
         self.size += 1
 
     def removeFromIndex(self, index):
+        """
+        removes the node at the specified index
+        """
         if self.size == 0:
             raise IndexError("the list is empty")
         if index < 0 or index >= self.size:
@@ -59,12 +82,18 @@ class CircularDoublyLinkedList(object):
         self.size -= 1
     
     def get(self, index):
+        """
+        returns the value that the node contains at the specified index
+        """
         if index >= self.size or index < 0:
             raise IndexError("Index out of bounds")
         current = self._traverse(index+1)
         return current.getValue()
 
     def display(self):
+        """
+        displays the whole list
+        """
         values = []
         current = self.head.getNext()
         for i in range(self.size):
@@ -73,6 +102,9 @@ class CircularDoublyLinkedList(object):
         print(values)
 
     def revDisplay(self):
+        """
+        prints the list in reverse
+        """
         values = []
         current = self.head.getPrev()
         for i in range(self.size):
@@ -81,12 +113,21 @@ class CircularDoublyLinkedList(object):
         print(values)
 
     def getSize(self):
+        """
+        returns the size of the list
+        """
         return self.size
 
     def isEmpty(self):
+        """
+        returns True if the list is empty
+        """
         return self.size == 0
 
     def _traverse(self, steps):
+        """
+        steps through the list and returns the node there
+        """
         current = self.head
         if steps / self.size < 0.5:
             for i in range(steps):
@@ -118,6 +159,10 @@ def main():
     a.removeFromIndex(3) #5021
     a.display()
     a.revDisplay()
+    print(a.get(0))
+    print(a.get(1))
+    print(a.get(2))
+    print(a.get(3))
     for i in range(100000):
         a.addToBack(i)
     for i in range(100000):

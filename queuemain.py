@@ -14,8 +14,8 @@ def main():
         print("exit: exit the interpreter")
         print()
         command = input("enter a command: ")
-        splitCommand = command.split()
         command = command.lower()
+        splitCommand = command.split()
         if command == "new queuesll":
             queue = QueueSLL()
             print()
@@ -24,13 +24,6 @@ def main():
             print()
         elif splitCommand[0] == "enqueue":
             queue.enqueue(eval(splitCommand[1]))
-            #ex = "queue.enqueue("+splitCommand[1]+")"
-            #value = compile(splitCommand[1], "queuemain.py", "single")
-            #try:
-            #    queue.enqueue(eval(value))
-            #except NameError:
-            #    queue.enqueue(splitCommand[1])
-            #exec(ex)
             print()
         elif command == "dequeue":
             print()

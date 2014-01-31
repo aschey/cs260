@@ -12,8 +12,8 @@ def main():
         print("exit: exit the interpreter")
         print()
         command = input("enter a command: ")
-        command = command.lower()
         splitCommand = command.split()
+        command = command.lower()
         if command == "new stackdca":
             capacity = int(input("capacity: "))
             stack = StackDCA(capacity)
