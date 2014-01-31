@@ -40,20 +40,22 @@ class SinglyLinkedList(object):
         # remove the first real node in the list
         self.head.setNext(newNext)
         self.size -= 1
-        if self.size == 0:
-            self.tail = None
+        self._tailRemoveCheck()
 
     def removeFromBack(self):
         """
         removes the node from the back of the list
         """
-        # get the second to last value
-        current = self._traverse(self.size-1)
-        # remove the last one
-        current.setNext(None)
-        # update the tail to reflect the new last value
-        self.tail = current
-        self.size -= 1
+        if self.size == 1:
+            self.removeFromFront()
+        else:
+            # get the second to last value
+            current = self._traverse(self.size-1)
+            # remove the last one
+            current.setNext(None)
+            # update the tail to reflect the new last value
+            self.tail = current
+            self.size -= 1
 
     def insertAtIndex(self, index, value):
         """
@@ -71,12 +73,17 @@ class SinglyLinkedList(object):
         """
         if index >= self.size:
             raise IndexError("index out of bounds")
-        current = self._traverse(index)
-        # get the node two nodes after the one to remove
-        newNext = current.getNext().getNext()
-        # set that node as the new nextNode to remove the one before that
-        current.setNext(newNext)
-        self.size -= 1
+        if self.size == 1:
+            self.removeFromFront()
+        elif self.size == 2 and index == 1:
+            self.removeFromBack()
+        else:
+            current = self._traverse(index)
+            # get the node two nodes after the one to remove
+            newNext = current.getNext().getNext()
+            # set that node as the new nextNode to remove the one before that
+            current.setNext(newNext)
+            self.size -= 1
 
     def get(self, index):
         """
@@ -131,6 +138,10 @@ class SinglyLinkedList(object):
             current = current.getNext()
         return current
 
+    def _tailRemoveCheck(self):
+        if self.isEmpty():
+            self.tail = None
+
 def main():
     a = SinglyLinkedList() 
     a.addToBack(1)
@@ -151,6 +162,20 @@ def main():
     a.insertAtIndex(1,3)
     a.insertAtIndex(1,4)
     a.display()
+    a.removeFromIndex(0)
+    a.display()
+    a.removeFromIndex(1)
+    a.display()
+    a.removeFromIndex(2)
+    a.display()
+    a.removeFromIndex(1)
+    #a.display()
+    a = SinglyLinkedList()
+    a.addToFront(1)
+    a.addToBack(2)
+    a.removeFromIndex(1)
+    print(a.tail.getValue())
+    #a.display()
     
     
     
