@@ -12,6 +12,7 @@
 
 from fillablearray import FillableArray
 import testtemplate as t
+import pdb
 
 class DynamicArray(FillableArray):
     def __init__(self, capacity):
@@ -103,29 +104,25 @@ class DynamicArray(FillableArray):
 
     def binarySearch(self, value):
         minVal = 0
-        maxVal = self.size
+        maxVal = self.size - 1
         while maxVal >= minVal:
-            mid = (minVal + maxVal) / 2 + 0.5
-            mid = round(mid)
-            print(mid)
-            print(minVal)
-            print(maxVal)
+            mid = (minVal + maxVal) // 2
             check = self.get(mid)
             if value < check:
-                maxVal = mid + 1
+                maxVal = mid - 1
             elif value > check:
-                minVal = mid - 1
+                minVal = mid + 1
             else:
                 return mid
 
     def linearSearch(self, value):
-        pass
+        
 
 def main1():
     a = DynamicArray(1)
-    for i in range(100):
+    for i in range(100000):
         a.addToBack(i)
-    a.binarySearch(100)
+    a.binarySearch(74345)
 
     
 def main():
