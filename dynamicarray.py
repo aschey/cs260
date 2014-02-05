@@ -43,8 +43,6 @@ class DynamicArray(FillableArray):
         assert self.size > 0, "the array is empty"
         self.shrinkCheck()
         super(DynamicArray, self).removeFromBack()
-        # if the array is only using about a forth of its capacity, it's 
-        # probably safe to shrink it
 
     def removeFromFront(self):
         """
@@ -88,15 +86,6 @@ class DynamicArray(FillableArray):
         if self.size / self.capacity <= 0.25:
             self._shrink()
 
-    def setAtIndex(self, index, value):
-        """
-        updates the index to reflect the given value
-        """
-        # the array may need to grow if the value is being added to the end
-        if index == self.size:
-            self.growCheck()
-        super(DynamicArray, self).setAtIndex(index, value)
-
     def insertAtIndex(self, index, value):
         """
         inserts the value at the specified index
@@ -112,6 +101,33 @@ class DynamicArray(FillableArray):
         self.shrinkCheck()
         super(DynamicArray, self).removeFromIndex(index)
 
+    def binarySearch(self, value):
+        minVal = 0
+        maxVal = self.size
+        while maxVal >= minVal:
+            mid = (minVal + maxVal) / 2 + 0.5
+            mid = round(mid)
+            print(mid)
+            print(minVal)
+            print(maxVal)
+            check = self.get(mid)
+            if value < check:
+                maxVal = mid + 1
+            elif value > check:
+                minVal = mid - 1
+            else:
+                return mid
+
+    def linearSearch(self, value):
+        pass
+
+def main1():
+    a = DynamicArray(1)
+    for i in range(100):
+        a.addToBack(i)
+    a.binarySearch(100)
+
+    
 def main():
     def testStore():
         print("length of store:", len(dArray.store))
@@ -213,36 +229,18 @@ def main():
         dArray.removeFromFront()
     for i in range(1000):
         dArray.addToFront(i)
-    for i in range(1000):
-        dArray.removeFromFront()
-    for i in range(1000):
-        dArray.setAtIndex(i, i)
     for i in range(500):
         dArray.removeFromFront()
     for i in range(500):
         dArray.removeFromBack()
-    for i in range(1000):
-        dArray.insertAtIndex(i, i)
-    for i in range(1000):
-        dArray.removeFromIndex(0)
+    dArray.display()
 
     def test8():
         t.template(8, "addition and removal of large quantities", dArray.toArray(), [])
         testStore()
     if t.toPrint(8):
         test8()
-
-    dArray.insertAtIndex(0,4)
-    dArray.insertAtIndex(0,5)
-    dArray.insertAtIndex(1,3)
-    dArray.removeFromIndex(0)
-    dArray.removeFromIndex(0)
-    dArray.insertAtIndex(0,1)
-    dArray.insertAtIndex(1,4)
-    dArray.insertAtIndex(2,3)
-    dArray.insertAtIndex(3,2)
-    dArray.removeFromIndex(3)
-
+    
     def test9():
         t.template(9, "insertAtIndex and removeFromIndex", dArray.toArray(), 
                 [1,4,3,4])
@@ -301,4 +299,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main1()

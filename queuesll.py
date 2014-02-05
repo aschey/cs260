@@ -1,5 +1,5 @@
 from singlylinkedlist import SinglyLinkedList
-import queuemain
+
 class QueueSLL(object):
     def __init__(self):
         self.store = SinglyLinkedList()
@@ -32,7 +32,15 @@ class QueueSLL(object):
         return self.store.getSize() == 0
 
 def main():
-    queuemain.main()
+    a = QueueSLL()
+    for i in range(100):
+        a.enqueue(i)
+    while not a.isEmpty():
+        print(a.dequeue())
+    for i in range(5):
+        a.enqueue(i)
+    while not a.isEmpty():
+        print(a.dequeue())
 
 if __name__ == "__main__":
     main()

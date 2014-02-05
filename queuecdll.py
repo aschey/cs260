@@ -30,14 +30,15 @@ class QueueCDLL(object):
 
 def main():
     a = QueueCDLL()
-    for i in range(10):
+    for i in range(100):
         a.enqueue(i)
-    a.store.display()
-    for i in range(10):
-        print(a.peek())
+    for i in range(100):
         print(a.dequeue())
-    a.dequeue()
-    a.store.display()
+    for i in range(5):
+        a.enqueue(i)
+    while not a.isEmpty():
+        print(a.dequeue())
+    
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,6 @@
 from singlylinkedlist import SinglyLinkedList
+import stackmain
+
 class StackSLL(object):
     def __init__(self):
         self.store = SinglyLinkedList()
@@ -28,3 +30,7 @@ class StackSLL(object):
         returns True if the value is empty
         """
         return self.store.isEmpty()
+def main():
+    stackmain.main()
+if __name__ == "__main__":
+    main()

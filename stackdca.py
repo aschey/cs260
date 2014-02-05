@@ -1,5 +1,5 @@
 from dynamiccirculararray import DynamicCircularArray
-import stackmain
+
 class StackDCA(object):
     def __init__(self, capacity):
         self.store = DynamicCircularArray(capacity)
@@ -32,7 +32,18 @@ class StackDCA(object):
         return self.store.isEmpty()
 
 def main():
-    stackmain.main()
+    a = StackDCA(1)
+    for i in range(100):
+        a.push(i)
+    for i in range(100):
+        print(a.pop())
+    print(a.store.getSize())
+    for i in range(5):
+        a.push(i)
+    for i in range(5):
+        print(a.pop())
+        
+
 
 if __name__ == "__main__":
     main()

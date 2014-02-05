@@ -14,7 +14,8 @@ import sys
 
 class FillableArray(object):
     def __init__(self, capacity):
-        assert capacity >= 0, "the capacity must be a positive integer"
+        if capacity < 0:
+            raise IndexError("the capacity must be a positive integer")
         # stores the values of the array
         self.store = [None] * capacity
         # max number of elements
@@ -26,7 +27,8 @@ class FillableArray(object):
         """
         adds the specified value to the front of the array
         """
-        assert self.size < self.capacity, "the array is full"
+        if self.isFull():
+            raise IndexError("the array is full")
         # move all the values up one slot
         for i in range(self.size, 0, -1):
             self.store[i] = self.store[i-1]
@@ -37,7 +39,8 @@ class FillableArray(object):
         """
         removes the first value in the array
         """
-        assert self.size > 0, "the array is empty"
+        if self.isEmpty():
+            raise IndexError("the array is empty")
         # move all the values down one slot
         for i in range(self.size-1):
             self.store[i] = self.store[i+1]
@@ -47,7 +50,8 @@ class FillableArray(object):
         """
         adds the specified value to the end of the array
         """
-        assert self.size < self.capacity, "the array is full"
+        if self.isFull():
+            raise indexError("the array is full")
         self.store[self.size] = value
         self.size += 1
 
@@ -55,7 +59,8 @@ class FillableArray(object):
         """
         removes the last value in the array
         """
-        assert self.size > 0, "the array is empty"
+        if self.isEmpty():
+            raise IndexError("the array is empty")
         # no need to remove anything because decrementing the size causes the last
         # value to be ignored
         self.size -= 1
@@ -64,25 +69,24 @@ class FillableArray(object):
         """
         returns the value at the specified index
         """
-        assert index >= 0 and index < self.size, "index out of bounds"
+        if index < 0 or index >= self.size:
+            raise IndexError("index out of bounds")
         return self.store[index]
 
     def setAtIndex(self, index, value):
         """
         updates the index to reflect the given value
         """
-        assert index >= 0 and index <= self.size, "index out of bounds"
-        # if calling setAtIndex at a slot not initialized yet, update the size
-        if index == self.size:
-            self.size += 1
+        if index < 0 or index >= self.size:
+            raise IndexError("index out of bounds")
         self.store[index] = value
 
     def insertAtIndex(self, index, value):
         """
         inserts the value at the index, moving other values out of the way
         """
-        assert self.size < self.capacity, "the array is full"
-        assert index <= self.size and index >= 0, "index out of bounds"
+        if index < 0 or index >= self.size:
+            raise IndexError("index out of bounds")
         # move values up one to make room
         for i in range(self.size, index, -1):
             self.store[i] = self.store[i-1]
@@ -93,8 +97,10 @@ class FillableArray(object):
         """
         removes the value at the specified index
         """
-        assert self.size > 0, "the array is empty"
-        assert index >= 0 and index < self.size, "index out of bounds"
+        if self.isEmpty():
+            raise IndexError("the array is empty")
+        if index >= self.size:
+            raise IndexError("index out of bounds")
         for i in range(index, self.size):
             self.store[i] = self.store[i+1]
         self.size -= 1
@@ -208,8 +214,8 @@ def main():
         fArray = FillableArray(10)
         fArray.setAtIndex(0, 3)
         t.template(5, "setAtIndex on empty array", fArray.toArray(), [3])
-    if t.toPrint(5):
-        test5()
+    #if t.toPrint(5):
+    #    test5()
 
     fArray.addToBack(10)
 
