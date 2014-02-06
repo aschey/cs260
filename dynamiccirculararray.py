@@ -14,7 +14,7 @@ import time
 
 class DynamicCircularArray(CircularArray):
     def __init__(self, capacity):
-        super(DynamicCircularArray, self).__init__(capacity)
+        super().__init__(capacity)
         # how much to grow or shrink self.store by
         self.factor = 2
         self.INIT_CAPACITY = capacity
@@ -38,13 +38,13 @@ class DynamicCircularArray(CircularArray):
         adds the value to the back of the array
         """
         self._growCheck()
-        super(DynamicCircularArray, self).addToBack(value)
+        super().addToBack(value)
 
     def removeFromBack(self):
         """
         removes the value from the back of the array
         """
-        super(DynamicCircularArray, self).removeFromBack()
+        super().removeFromBack()
         self._shrinkCheck()
         
     def addToFront(self, value):
@@ -52,13 +52,13 @@ class DynamicCircularArray(CircularArray):
         adds the value to the front of the array
         """
         self._growCheck()
-        super(DynamicCircularArray, self).addToFront(value)
+        super().addToFront(value)
 
     def removeFromFront(self):
         """
         removes the first value in the array
         """
-        super(DynamicCircularArray, self).removeFromFront()
+        super().removeFromFront()
         self._shrinkCheck()
     
     def _grow(self):
@@ -321,4 +321,4 @@ def main1():
     
 
 if __name__ == "__main__":
-    main1()
+    main()

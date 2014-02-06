@@ -18,7 +18,7 @@ class DynamicArray(FillableArray):
     def __init__(self, capacity):
         # having a capacity less than two will cause problems with _shrink
         assert capacity >= 1
-        super(DynamicArray, self).__init__(capacity)
+        super().__init__(capacity)
         # how much to grow or shrink self.store by
         self.factor = 2
 
@@ -28,14 +28,14 @@ class DynamicArray(FillableArray):
         """
         # grow the array if it has reached its capacity
         self.growCheck()
-        super(DynamicArray, self).addToBack(value)
+        super().addToBack(value)
 
     def addToFront(self, value):
         """
         adds the specified value to the front of the array
         """
         self.growCheck()
-        super(DynamicArray, self).addToFront(value)
+        super().addToFront(value)
 
     def removeFromBack(self):
         """
@@ -43,7 +43,7 @@ class DynamicArray(FillableArray):
         """
         assert self.size > 0, "the array is empty"
         self.shrinkCheck()
-        super(DynamicArray, self).removeFromBack()
+        super().removeFromBack()
 
     def removeFromFront(self):
         """
@@ -51,7 +51,7 @@ class DynamicArray(FillableArray):
         """
         assert self.size > 0, "the array is empty"
         self.shrinkCheck()
-        super(DynamicArray, self).removeFromFront()
+        super().removeFromFront()
 
     def _grow(self):
         """
@@ -92,7 +92,7 @@ class DynamicArray(FillableArray):
         inserts the value at the specified index
         """
         self.growCheck()
-        super(DynamicArray, self).insertAtIndex(index, value)
+        super().insertAtIndex(index, value)
 
     def removeFromIndex(self, index):
         """
@@ -100,7 +100,7 @@ class DynamicArray(FillableArray):
         """
         assert self.size > 0, "the array is empty"
         self.shrinkCheck()
-        super(DynamicArray, self).removeFromIndex(index)
+        super().removeFromIndex(index)
 
     def binarySearch(self, value):
         minVal = 0
@@ -116,7 +116,7 @@ class DynamicArray(FillableArray):
                 return mid
 
     def linearSearch(self, value):
-        
+       return self.find(value)
 
 def main1():
     a = DynamicArray(1)
