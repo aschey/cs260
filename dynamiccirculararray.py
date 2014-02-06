@@ -29,8 +29,6 @@ class DynamicCircularArray(CircularArray):
         temp.store = array
         temp.size = len(array)
         temp.endIndex = len(array)
-        # grow the array to prevent errors when using correctIndex
-        temp._grow()
         return temp
     
     def addToBack(self, value):
@@ -307,18 +305,24 @@ def main():
         test17()
 
 def main1():
-    a = DynamicCircularArray(1)
+    a = DynamicCircularArray.fromArray([0])
     for i in range(100000):
         a.addToFront(i)
+    print(a.capacity)
     for i in range(100000):
         a.setAtIndex(i,i)
+    print(a.capacity)
     for i in range(100000):
         a.removeFromFront()
+    print(a.capacity)
     for i in range(100000):
         a.addToBack(i)
+    print(a.capacity)
     for i in range(100000):
         a.removeFromBack()
+    print(a.capacity)
+    a.display()
     
 
 if __name__ == "__main__":
-    main()
+    main1()

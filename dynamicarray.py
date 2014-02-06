@@ -12,44 +12,47 @@
 
 from fillablearray import FillableArray
 import testtemplate as t
-import pdb
+import subprocess
 
 class DynamicArray(FillableArray):
     def __init__(self, capacity):
-        # having a capacity less than two will cause problems with _shrink
-        assert capacity >= 1
+        if capacity < 1:
+            raise ValueError("capacity must be 1 or greater")
         super().__init__(capacity)
         # how much to grow or shrink self.store by
         self.factor = 2
+        self.INIT_CAPACITY = capacity
 
     def addToBack(self, value):
         """
         adds the specified value to the end of the array
         """
         # grow the array if it has reached its capacity
-        self.growCheck()
+        self._growCheck()
         super().addToBack(value)
 
     def addToFront(self, value):
         """
         adds the specified value to the front of the array
         """
-        self.growCheck()
+        self._growCheck()
         super().addToFront(value)
 
     def removeFromBack(self):
         """
         removes the last value in the array
         """
-        assert self.size > 0, "the array is empty"
-        self.shrinkCheck()
+        if self.size <= 0:
+            raise IndexError("the array is empty")
+        self._shrinkCheck()
         super().removeFromBack()
 
     def removeFromFront(self):
         """
         removes the first value in the array
         """
-        assert self.size > 0, "the array is empty"
+        if self.size <= 0:
+            raise IndexError("the array is empty")
         self.shrinkCheck()
         super().removeFromFront()
 
@@ -73,18 +76,18 @@ class DynamicArray(FillableArray):
             temp[i] = self.store[i]
         self.store = temp
 
-    def growCheck(self):
+    def _growCheck(self):
         """
         grows the array if it is full
         """
         if self.isFull():
             self._grow()
 
-    def shrinkCheck(self):
+    def _shrinkCheck(self):
         """
         shrinks the array if the size is small enough
         """
-        if self.size / self.capacity <= 0.25:
+        if self.size > self.INIT_CAPACITY and self.size / self.capacity <= 0.25:
             self._shrink()
 
     def insertAtIndex(self, index, value):
@@ -98,22 +101,44 @@ class DynamicArray(FillableArray):
         """
         removes the value at the specified index
         """
-        assert self.size > 0, "the array is empty"
+        if self.size <= 0:
+            raise IndexError("the array is empty")
         self.shrinkCheck()
         super().removeFromIndex(index)
+    
+    @staticmethod
+    def fromRandomArray(self, search, count, start, step, swaps):
+		if search == "binary":
+            command = str.format("python3 makeintegers.py {0} 0 1 0", maxSize)
+        
+        elif search == "linear":
+            command = str.format("python3 makeintegers.py {0} 0 1 {0}", maxSize)
+        
+        # get raw data from the subprocess
+        data = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        # read the data and return it as a bytes object, decode it into a string, 
+        # then convert it to a list
+        ints = eval(data.communicate()[0].decode(encoding="UTF-8"))
+        # close the data stream
+        data.stdout.close()
+        
+        temp = DynamicCircularArray(count)
+        temp.store = ints
+        temp.size = count
+        
 
     def binarySearch(self, value):
         minVal = 0
         maxVal = self.size - 1
-        while maxVal >= minVal:
-            mid = (minVal + maxVal) // 2
-            check = self.get(mid)
-            if value < check:
-                maxVal = mid - 1
-            elif value > check:
-                minVal = mid + 1
-            else:
-                return mid
+    while maxVal >= minVal:
+        mid = (minVal + maxVal) // 2
+        check = self.get(mid)
+        if value < check:
+            maxVal = mid - 1
+        elif value > check:
+            minVal = mid + 1
+        else:
+            return mid
 
     def linearSearch(self, value):
        return self.find(value)
