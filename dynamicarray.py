@@ -117,9 +117,9 @@ class DynamicArray(FillableArray):
         # close the data stream
         data.stdout.close()
         
-        temp = DynamicArray(count)
+        temp = DynamicArray(size)
         temp.store = ints
-        temp.size = count
+        temp.size = size
         return temp
         
 

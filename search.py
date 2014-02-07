@@ -9,7 +9,7 @@ maxTime = int(argv[2])
 inSet = argv[3].lower() # either in or out
 maxSize = int(argv[4])
 maxXVal = int(maxSize * 1.1)
-minSize, step = maxSize // 10
+minSize = maxSize // 10
 numTrials = int(argv[5])
 numReps = int(argv[6])
 
@@ -19,21 +19,23 @@ if inSet != "in" and inSet != "out":
     raise ValueError("third arg must be either 'in' or 'out'")
 
 def main():
-    for t in range(numTrials):
-        for size in range(minSize, maxSize+1, step)
-            bSearchTime = 0
-            lSearchTime = 0
+    yVals = []
+    xVals = [i for i in range(minSize, maxSize+1, minSize)]
+    for t in range(1, numTrials+1):
+        print("running trial", t, "...")
+        for size in range(minSize, maxSize+1, minSize):
+            totalTime = 0
             for n in range(numReps):
-                if search == "binary" or search == "both":
-                    bSearchTime += timeBSearch()
-                if search == "linear" or search == "both":
-                    lSearchTime += timeLSearch()
-            bSearchTime /= numReps
-            lSearchTime /= numReps
-            pylab.plot([i for i in range(maxXval)])
+                totalTime += timeSearch(size)
+        avgTime = totalTime / numReps
+        yVals.append(avgTime)
+    print(len(xVals))
+    print(len(yVals))
+    pylab.scatter(xVals, yVals)
+    pylab.show()
 
-def timeSearch():
-    if search == "binary" or search == "both":
+def timeSearch(size):
+    if search == "binary":
         swaps = 0
     else:
         swaps = random.randint(0, maxSize)
@@ -41,30 +43,23 @@ def timeSearch():
     if inSet == "out":
         searchVal = -1
     else:
-        searchVal == random.randint(0, maxSize)
+        searchVal = random.randint(0, maxSize)
 
     searchData = DynamicArray.fromRandomArray(size, swaps)
 
     times = []
-    if search == "binary" or search == "both":
+    if search == "binary":
         start = time.time()
-        searchData.binarySearch(searchData.get(searchVal))
-        times.append(time.time() - start)
-    if search == "linear" or search == "both":
+        searchData.binarySearch(searchVal)
+        return time.time() - start
+    else:
         start = time.time()
-        searchData.linearSearch(searchData.get(searchVal))
-        times.append(time.time() - start)
-    return times
+        searchData.linearSearch(searchVal)
+        return time.time() - start
 
-def timeLSearch():
-    searchData = DynamicArray.fromRandomArray(search, size, 0, 1, 0)
-    start = time.time()
-    DynamicArray.linearSearch(searchData.get(3))
-    finish = time.time() - start
-    return finish
 
 
     
 if __name__ == "__main__":
-    print(getDataSizes())
+    main()
 
