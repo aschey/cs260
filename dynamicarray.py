@@ -107,12 +107,12 @@ class DynamicArray(FillableArray):
         super().removeFromIndex(index)
     
     @staticmethod
-    def fromRandomArray(self, search, count, start, step, swaps):
-		if search == "binary":
-            command = str.format("python3 makeintegers.py {0} 0 1 0", maxSize)
+    def fromRandomArray(search, count, start, step, swaps):
+        if search == "binary":
+            command = str.format("python3 makeintegers.py {0} 0 1 0", count)
         
         elif search == "linear":
-            command = str.format("python3 makeintegers.py {0} 0 1 {0}", maxSize)
+            command = str.format("python3 makeintegers.py {0} 0 1 {0}", count)
         
         # get raw data from the subprocess
         data = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
@@ -122,23 +122,24 @@ class DynamicArray(FillableArray):
         # close the data stream
         data.stdout.close()
         
-        temp = DynamicCircularArray(count)
+        temp = DynamicArray(count)
         temp.store = ints
         temp.size = count
+        return temp
         
 
     def binarySearch(self, value):
         minVal = 0
         maxVal = self.size - 1
-    while maxVal >= minVal:
-        mid = (minVal + maxVal) // 2
-        check = self.get(mid)
-        if value < check:
-            maxVal = mid - 1
-        elif value > check:
-            minVal = mid + 1
-        else:
-            return mid
+        while maxVal >= minVal:
+            mid = (minVal + maxVal) // 2
+            check = self.get(mid)
+            if value < check:
+                maxVal = mid - 1
+            elif value > check:
+                minVal = mid + 1
+            else:
+                return mid
 
     def linearSearch(self, value):
        return self.find(value)
