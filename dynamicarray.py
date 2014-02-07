@@ -107,13 +107,8 @@ class DynamicArray(FillableArray):
         super().removeFromIndex(index)
     
     @staticmethod
-    def fromRandomArray(search, count, start, step, swaps):
-        if search == "binary":
-            command = str.format("python3 makeintegers.py {0} 0 1 0", count)
-        
-        elif search == "linear":
-            command = str.format("python3 makeintegers.py {0} 0 1 {0}", count)
-        
+    def fromRandomArray(size, swaps):
+        command = str.format("python3 makeintegers.py {0} 0 1 {1}", size, swaps)
         # get raw data from the subprocess
         data = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         # read the data and return it as a bytes object, decode it into a string, 
