@@ -107,19 +107,10 @@ class DynamicArray(FillableArray):
         super().removeFromIndex(index)
     
     @staticmethod
-    def fromRandomArray(size, swaps):
-        command = str.format("python3 makeintegers.py {0} 0 1 {1}", size, swaps)
-        # get raw data from the subprocess
-        data = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-        # read the data and return it as a bytes object, decode it into a string, 
-        # then convert it to a list
-        ints = eval(data.communicate()[0].decode(encoding="UTF-8"))
-        # close the data stream
-        data.stdout.close()
-        
-        temp = DynamicArray(size)
-        temp.store = ints
-        temp.size = size
+    def fromArray(array):
+        temp = DynamicArray(len(array))
+        temp.store = array
+        temp.size = len(array)
         return temp
         
 

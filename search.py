@@ -1,11 +1,13 @@
 from sys import argv
 from dynamicarray import DynamicArray
+from scanner import Scanner
 import pylab
 import time
 import random
+import subprocess
 
 search = argv[1].lower()
-maxTime = int(argv[2])
+maxTime = float(argv[2])
 inSet = argv[3].lower() # either in or out
 maxSize = int(argv[4])
 maxXVal = int(maxSize * 1.1)
@@ -18,6 +20,14 @@ if search != "binary" and search != "linear" and search != "both":
 if inSet != "in" and inSet != "out":
     raise ValueError("third arg must be either 'in' or 'out'")
 
+if search == "binary":
+    swaps = 0
+else:
+    swaps = random.randint(0, maxSize)
+if inSet == "out":
+    searchVal = -1
+else:
+    searchVal = random.randint(0, maxSize-1)
 def main():
     yVals = []
     xVals = [i for i in range(minSize, maxSize+1, minSize)]
@@ -29,23 +39,30 @@ def main():
                 totalTime += timeSearch(size)
         avgTime = totalTime / numReps
         yVals.append(avgTime)
-    print(len(xVals))
-    print(len(yVals))
+    m,b = pylab.polyfit(xVals, yVals, 1)
+    bestFit = [m*x + b for x in yVals]
     pylab.scatter(xVals, yVals)
+    pylab.plot(xVals, bestFit, label="line of best fit")
+    pylab.ylim(0, maxTime)
+    pylab.xlim(0, maxXVal)
+    pylab.title("Size of array vs average time taken to locate value")
+    pylab.xlabel("size of array (slots)")
+    pylab.ylabel("time taken (seconds")
+    pylab.legend()
     pylab.show()
 
 def timeSearch(size):
-    if search == "binary":
-        swaps = 0
-    else:
-        swaps = random.randint(0, maxSize)
-
-    if inSet == "out":
-        searchVal = -1
-    else:
-        searchVal = random.randint(0, maxSize)
-
-    searchData = DynamicArray.fromRandomArray(size, swaps)
+    command = str.format("python3 makeintegers.py {0} 0 1 {1} > data.out", size, swaps)
+    subprocess.call(command, shell=True)
+    numFile = Scanner("data.out")
+    searchArray = []
+    while True:
+        token = numFile.readint()
+        if token == "":
+            break
+        else:
+            searchArray.append(token)
+    searchData = DynamicArray.fromArray(searchArray)
 
     times = []
     if search == "binary":

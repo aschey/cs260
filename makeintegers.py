@@ -21,7 +21,7 @@ def main():
         ints[b] = temp
 
     #prints the newly swapped array
-    print(ints)
-
+    for i in ints:
+        print(i, end=" ")
 
 main()
