@@ -1,3 +1,4 @@
+# usage: python3 search.py search maxTime inSet maxSize numTrials numReps
 from sys import argv
 from dynamicarray import DynamicArray
 from scanner import Scanner
@@ -12,8 +13,8 @@ maxTime = float(argv[2])
 inSet = argv[3].lower() # either in or out
 maxSize = int(argv[4])
 maxXVal = int(maxSize * 1.1)
-minSize = maxSize // 10
 numTrials = int(argv[5])
+minSize = maxSize // numTrials
 numReps = int(argv[6])
 
 if search != "binary" and search != "linear" and search != "both":
@@ -32,18 +33,21 @@ else:
 def main():
     yVals = []
     xVals = [i for i in range(minSize, maxSize+1, minSize)]
-    for t in range(1, numTrials+1):
-        print("running trial", t, "...")
-        for size in range(minSize, maxSize+1, minSize):
-            searchData = createSearchArray(size)
-            totalTime = 0
-            for n in range(numReps):
-                totalTime += timeSearch(searchData)
+    trialNum = 1
+    for size in range(minSize, maxSize+1, minSize):
+        print("running trial", trialNum, "...")
+        searchData = createSearchArray(size)
+        totalTime = 0
+        for n in range(numReps):
+            totalTime += timeSearch(searchData)
         avgTime = totalTime / numReps
         yVals.append(avgTime)
+        trialNum += 1
     m,b = pylab.polyfit(xVals, yVals, 1)
     bestFit = [m*x + b for x in yVals]
+    print(bestFit)
     pylab.scatter(xVals, yVals)
+    print(yVals)
     pylab.plot(xVals, bestFit, label="line of best fit")
     pylab.ylim(0, maxTime)
     pylab.xlim(0, maxXVal)
