@@ -3,6 +3,7 @@ from dynamicarray import DynamicArray
 from scanner import Scanner
 import pylab
 import time
+import timeit
 import random
 import subprocess
 
@@ -34,9 +35,10 @@ def main():
     for t in range(1, numTrials+1):
         print("running trial", t, "...")
         for size in range(minSize, maxSize+1, minSize):
+            searchData = createSearchArray(size)
             totalTime = 0
             for n in range(numReps):
-                totalTime += timeSearch(size)
+                totalTime += timeSearch(searchData)
         avgTime = totalTime / numReps
         yVals.append(avgTime)
     m,b = pylab.polyfit(xVals, yVals, 1)
@@ -47,11 +49,21 @@ def main():
     pylab.xlim(0, maxXVal)
     pylab.title("Size of array vs average time taken to locate value")
     pylab.xlabel("size of array (slots)")
-    pylab.ylabel("time taken (seconds")
+    pylab.ylabel("average time taken (seconds)")
     pylab.legend()
     pylab.show()
 
-def timeSearch(size):
+def timeSearch(searchData):
+    if search == "binary":
+        start = time.time()
+        searchData.binarySearch(searchVal)
+        return time.time() - start
+    else:
+        start = time.time()
+        searchData.linearSearch(searchVal)
+        return time.time() - start
+
+def createSearchArray(size):
     command = str.format("python3 makeintegers.py {0} 0 1 {1} > data.out", size, swaps)
     subprocess.call(command, shell=True)
     numFile = Scanner("data.out")
@@ -62,21 +74,8 @@ def timeSearch(size):
             break
         else:
             searchArray.append(token)
-    searchData = DynamicArray.fromArray(searchArray)
-
-    times = []
-    if search == "binary":
-        start = time.time()
-        searchData.binarySearch(searchVal)
-        return time.time() - start
-    else:
-        start = time.time()
-        searchData.linearSearch(searchVal)
-        return time.time() - start
-
-
-
-    
+    return DynamicArray.fromArray(searchArray)
+   
 if __name__ == "__main__":
     main()
 
