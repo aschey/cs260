@@ -8,13 +8,21 @@ import timeit
 import random
 import subprocess
 
+# either binary or linear
 search = argv[1].lower()
+# the maximum time to put on the y axis
 maxTime = float(argv[2])
-inSet = argv[3].lower() # either in or out
+# either in or out, specifies whether to search for a value in or out of the array
+inSet = argv[3].lower()
+# the maximum array size to test
 maxSize = int(argv[4])
+# the maximum x value to plot
 maxXVal = int(maxSize * 1.1)
+# how many data points to plot
 numTrials = int(argv[5])
+# the minimum array size to test
 minSize = maxSize // numTrials
+# the number of repeat tests
 numReps = int(argv[6])
 
 if search != "binary" and search != "linear" and search != "both":
@@ -25,7 +33,7 @@ if inSet != "in" and inSet != "out":
 if search == "binary":
     swaps = 0
 else:
-    swaps = random.randint(0, maxSize)
+    swaps = random.randint(1, maxSize)
 if inSet == "out":
     searchVal = -1
 else:
@@ -71,14 +79,14 @@ def createSearchArray(size):
     command = str.format("python3 makeintegers.py {0} 0 1 {1} > data.out", size, swaps)
     subprocess.call(command, shell=True)
     numFile = Scanner("data.out")
-    searchArray = []
+    searchArray = DynamicArray(size)
     while True:
         token = numFile.readint()
         if token == "":
             break
         else:
-            searchArray.append(token)
-    return DynamicArray.fromArray(searchArray)
+            searchArray.addToBack(token)
+    return searchArray
    
 if __name__ == "__main__":
     main()

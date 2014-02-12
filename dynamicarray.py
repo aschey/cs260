@@ -105,14 +105,6 @@ class DynamicArray(FillableArray):
             raise IndexError("the array is empty")
         self.shrinkCheck()
         super().removeFromIndex(index)
-    
-    @staticmethod
-    def fromArray(array):
-        temp = DynamicArray(len(array))
-        temp.store = array
-        temp.size = len(array)
-        return temp
-        
 
     def binarySearch(self, value):
         minVal = 0
