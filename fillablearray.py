@@ -165,6 +165,12 @@ class FillableArray(object):
         """
         return self.size == self.capacity
 
+    def getSize(self):
+        """
+        returns the size
+        """
+        return self.size
+
 def main():
     t.setSleepTime(0)
     t.setStopOnInput()
