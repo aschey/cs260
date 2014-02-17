@@ -9,7 +9,6 @@
 # 01/13/2014
 ################################################
 
-import testtemplate as t
 import sys
 
 class FillableArray(object):
@@ -101,7 +100,7 @@ class FillableArray(object):
             raise IndexError("the array is empty")
         if index >= self.size:
             raise IndexError("index out of bounds")
-        for i in range(index, self.size):
+        for i in range(index, self.size-1):
             self.store[i] = self.store[i+1]
         self.size -= 1
 

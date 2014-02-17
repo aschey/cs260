@@ -1,4 +1,4 @@
-# usage: python3 search.py search maxTime inSet maxSize numTrials replicates
+# usage: python3 search.py search maxTime inSet maxSize numTrials replicates swaps
 from sys import argv
 from dynamicarray import DynamicArray
 from scanner import Scanner
@@ -25,7 +25,6 @@ minSize = maxSize // numTrials
 numReps = int(argv[6])
 # the number of times to shuffle the data
 swaps = int(argv[7])
-
 if search != "binary" and search != "linear":
     raise ValueError("first arg must be either 'binary' or 'linear'")
 if inSet != "in" and inSet != "out":
@@ -56,7 +55,7 @@ def main():
         yVals = []
         for rep in trialVals:
             yVals.append(rep[i])
-        pylab.scatter(xVals, yVals)
+        pylab.scatter(xVals, yVals, marker='x')
 
     # set the attributes of the plot
     pylab.ylim(0, maxTime)
@@ -64,7 +63,7 @@ def main():
     pylab.title("Size of array vs average time taken to locate value")
     pylab.xlabel("size of array (slots)")
     pylab.ylabel("average time taken (seconds)")
-    pylab.show()
+    pylab.savefig(search + "_search_" + inSet + ".eps", format="eps", dpm=3000)
 
 def timeSearch(searchData):
     if inSet == "in":

@@ -1,6 +1,6 @@
 #################################################
 # dynamicarray.py
-# 
+#
 # Creates the DynamicArray class
 #
 # Author: Austin Schey
@@ -11,7 +11,6 @@
 ################################################
 
 from fillablearray import FillableArray
-import testtemplate as t
 import subprocess
 
 class DynamicArray(FillableArray):
@@ -103,21 +102,33 @@ class DynamicArray(FillableArray):
         """
         if self.size <= 0:
             raise IndexError("the array is empty")
-        self.shrinkCheck()
         super().removeFromIndex(index)
+        self._shrinkCheck()
 
     def binarySearch(self, value):
         minVal = 0
-        maxVal = self.size - 1
-        while maxVal >= minVal:
+        maxVal = self.size
+        while maxVal > minVal:
             mid = (minVal + maxVal) // 2
             check = self.get(mid)
-            if value < check:
-                maxVal = mid - 1
-            elif value > check:
+            if check > value:
+                maxVal = mid
+            elif check < value:
                 minVal = mid + 1
             else:
                 return mid
+
+    def binarySearchRec(self, value, minVal, maxVal):
+        if maxVal == minVal:
+            return None
+        mid = (minVal + maxVal) // 2
+        check = self.get(mid)
+        if check > value:
+            return self.binarySearchRec(value, minVal, mid)
+        elif check < value:
+            return self.binarySearchRec(value, mid+1, maxVal)
+        else:
+            return mid
 
     def linearSearch(self, value):
        return self.find(value)
@@ -128,7 +139,7 @@ def main1():
         a.addToBack(i)
     a.binarySearch(74345)
 
-    
+
 def main():
     def testStore():
         print("length of store:", len(dArray.store))
@@ -148,7 +159,7 @@ def main():
     dArray.addToBack(6)
     dArray.addToFront(0)
     dArray.addToFront(9)
-    
+
     def test1():
         t.template(1, "addToBack and addToFront", dArray.toArray(),
                 [9,0,9,4,3,2,1,5,2,6])
@@ -189,7 +200,7 @@ def main():
         test4()
 
     dArray.insertAtIndex(1, 5)
-    
+
     def test5():
         t.template(5, "insertAtIndex", dArray.toArray(), [4,5,3,2])
         testStore()
@@ -200,7 +211,7 @@ def main():
     dArray.removeFromBack()
 
     def test6():
-        t.template(6, "shrink at capacity less than the original", dArray.toArray(), 
+        t.template(6, "shrink at capacity less than the original", dArray.toArray(),
                 [5,3])
         testStore()
     if t.toPrint(6):
