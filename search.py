@@ -63,7 +63,8 @@ def main():
     pylab.title("Size of array vs average time taken to locate value")
     pylab.xlabel("size of array (slots)")
     pylab.ylabel("average time taken (seconds)")
-    pylab.savefig(search + "_search_" + inSet + ".eps", format="eps", dpm=3000)
+    pylab.savefig(search + "_search_" + inSet + ".eps", format="eps")
+    pylab.show()
 
 def timeSearch(searchData):
     if inSet == "in":
