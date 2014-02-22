@@ -9,8 +9,6 @@
 # 01/13/2014
 ################################################
 
-import sys
-
 class FillableArray(object):
     def __init__(self, capacity):
         if capacity < 0:

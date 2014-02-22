@@ -11,7 +11,6 @@
 ################################################
 
 from fillablearray import FillableArray
-import subprocess
 
 class DynamicArray(FillableArray):
     def __init__(self, capacity):
@@ -52,14 +51,14 @@ class DynamicArray(FillableArray):
         """
         if self.size <= 0:
             raise IndexError("the array is empty")
-        self.shrinkCheck()
+        self._shrinkCheck()
         super().removeFromFront()
 
     def _grow(self):
         """
         grows the array by the factor specified in init
         """
-        self.capacity = self.capacity * self.factor
+        self.capacity *= self.factor
         temp = [None] * self.capacity
         for i in range(self.size):
             temp[i] = self.store[i]
@@ -93,7 +92,7 @@ class DynamicArray(FillableArray):
         """
         inserts the value at the specified index
         """
-        self.growCheck()
+        self._growCheck()
         super().insertAtIndex(index, value)
 
     def removeFromIndex(self, index):
@@ -133,11 +132,115 @@ class DynamicArray(FillableArray):
     def linearSearch(self, value):
        return self.find(value)
 
+    def mergeSort(self):
+        self.helper = [None] * self.size
+        self._sort(0, self.size)
+
+    def _sort(self, low, high):
+        if high - low < 2:
+            return
+        middle = (high+low)//2
+        self._sort(low, middle)
+        self._sort(middle, high)
+        self._merge(low, middle, high)
+
+    def _merge(self, low, middle, high):
+        for i in range(low, high):
+            self.helper[i] = self.store[i]
+        i = low
+        j = middle
+        k = low
+        while i < middle and j < high:
+            if self.helper[i] <= self.helper[j]:
+                self.store[k] = self.helper[i]
+                i += 1
+            else:
+                self.store[k] = self.helper[j]
+                j += 1
+            k += 1
+        while i < middle:
+            self.store[k] = self.helper[i]
+            k += 1
+            i += 1
+
+    def stoogeSort(self):
+        return self._stoogeRec(0, self.size-1)
+
+    def _stoogeRec(self, i, j):
+        if self.store[j] < self.store[i]:
+            self._swap(i, j)
+        if j - i + 1 >= 3:
+            t = (j - i + 1) // 3
+            self._stoogeRec(i, j-t)
+            self._stoogeRec(i+t, j)
+            self._stoogeRec(i, j-t)
+
+    def _swap(self, a, b):
+        temp = self.store[a]
+        self.store[a] = self.store[b]
+        self.store[b] = temp
+   
+    def insertionSort(self):
+        for i in range(self.size):
+            key = self.store[i]
+            j = i - 1
+            while j >= 0 and self.store[j] > key:
+                self.store[j+1] = self.store[j]
+                j -= 1
+            self.store[j+1] = key
+            
+    def selectionSort(self):
+        for j in range(self.size-1):
+            iMin = j
+            for i in range(j+1, self.size):
+                if (self.store[i] < self.store[iMin]):
+                    iMin = i
+            if iMin != j:
+                self._swap(iMin, j)
+
+    def quickSort(self):
+        return self._quickSortRec(0, self.size-1)
+
+    def _quickSortRec(self, low, high):
+        if high <= low:
+            return
+        self._swap(low, (low+high)//2)
+        last = low
+        for i in range(low+1, high+1):
+            if self.store[i] < self.store[low]:
+                self._swap(last, i)
+        self._swap(low, last)
+        self._quickSortRec(low, last-1)
+        self._quickSortRec(last+1, high)
+
 def main1():
+    dArray = DynamicArray(1)
+
+    dArray.addToFront(3)
+    dArray.addToBack(2)
+    dArray.addToBack(1)
+    dArray.addToFront(4)
+    dArray.addToFront(9)
+    dArray.addToBack(5)
+    dArray.addToBack(2)
+    dArray.addToBack(6)
+    dArray.addToFront(0)
+    dArray.addToFront(9) # 0 9 9 4 3 2 1 5 2 6
+    dArray.removeFromFront()
+    dArray.removeFromBack()
+    dArray.removeFromFront()
+    dArray.removeFromBack() # 9 4 3 2 1 5
     a = DynamicArray(1)
-    for i in range(100000):
-        a.addToBack(i)
-    a.binarySearch(74345)
+    a.addToBack(8)
+    a.addToBack(7)
+    a.addToBack(6)
+    a.addToBack(5)
+    a.addToBack(4)
+    a.addToBack(3)
+    a.addToBack(2)
+    a.addToBack(1)
+    a.mergeSort()
+    a.display()
 
 
 def main():
@@ -158,7 +261,7 @@ def main():
     dArray.addToBack(2)
     dArray.addToBack(6)
     dArray.addToFront(0)
-    dArray.addToFront(9)
+    dArray.addToFront(9) # 0 9 9 4 3 2 1 5 2 6
 
     def test1():
         t.template(1, "addToBack and addToFront", dArray.toArray(),
