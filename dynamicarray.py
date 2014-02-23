@@ -137,42 +137,60 @@ class DynamicArray(FillableArray):
         self._sort(0, self.size)
 
     def _sort(self, low, high):
+        # an array of size 1 is already sorted
         if high - low < 2:
             return
         middle = (high+low)//2
+        # sort the lower half of the array
         self._sort(low, middle)
+        # sort the upper half of the array
         self._sort(middle, high)
+        # merge the array from low to middle and middle to high
         self._merge(low, middle, high)
 
     def _merge(self, low, middle, high):
+        # make a copy of the values to start to prevent overriding
         for i in range(low, high):
             self.helper[i] = self.store[i]
+        # the lowest value of the first array
         i = low
+        # the lowest value of the second array
         j = middle
+        # the index to place the new lowest value in
         k = low
+        # continuously compare the lowest values of the first and second part of the array
         while i < middle and j < high:
+            # if the first array has the lower value, move it to the first available space
             if self.helper[i] <= self.helper[j]:
                 self.store[k] = self.helper[i]
                 i += 1
+            # else, move the value from the second array to the first available space
             else:
                 self.store[k] = self.helper[j]
                 j += 1
             k += 1
+        # copy the remaining elements from the helper into the array
         while i < middle:
             self.store[k] = self.helper[i]
             k += 1
             i += 1
-
+        
     def stoogeSort(self):
-        return self._stoogeRec(0, self.size-1)
+        return self._stoogeRec(0, self.size)
 
     def _stoogeRec(self, i, j):
-        if self.store[j] < self.store[i]:
-            self._swap(i, j)
-        if j - i + 1 >= 3:
-            t = (j - i + 1) // 3
+        # swap the first and last values if the first value is greater
+        if self.store[j-1] < self.store[i]:
+            self._swap(i, j-1)
+        # base case: length of the array to be sorted is less than 3
+        if j - i >= 3:
+            # split the array into three parts
+            t = (j - i) // 3
+            # sort the first two-thirds of the array
             self._stoogeRec(i, j-t)
+            # sort the second two-thirds of the array
             self._stoogeRec(i+t, j)
+            # sort the first two-thirds of the array again
             self._stoogeRec(i, j-t)
 
     def _swap(self, a, b):
@@ -183,35 +201,54 @@ class DynamicArray(FillableArray):
     def insertionSort(self):
         for i in range(self.size):
             key = self.store[i]
-            j = i - 1
-            while j >= 0 and self.store[j] > key:
-                self.store[j+1] = self.store[j]
+            j = i
+            # move all values up until a value greater than the key is found
+            while j > 0 and self.store[j-1] > key:
+                self.store[j] = self.store[j-1]
                 j -= 1
-            self.store[j+1] = key
+            # set the key at the index one before the value greater than the key that was found
+            self.store[j] = key
             
     def selectionSort(self):
-        for j in range(self.size-1):
+        for j in range(self.size):
             iMin = j
-            for i in range(j+1, self.size):
+            for i in range(j, self.size):
+                # scan the array from the starting value to the end, 
+                # searching for a value less than the starting value
                 if (self.store[i] < self.store[iMin]):
                     iMin = i
+            # if a smaller value is found, swap it with the starting value
             if iMin != j:
                 self._swap(iMin, j)
 
     def quickSort(self):
-        return self._quickSortRec(0, self.size-1)
+        return self._quickSortRec(0, self.size)
 
-    def _quickSortRec(self, low, high):
-        if high <= low:
+    def n_quickSortRec(self, low, high):
+        if high == low:
             return
         self._swap(low, (low+high)//2)
         last = low
-        for i in range(low+1, high+1):
+        for i in range(low+1, high):
             if self.store[i] < self.store[low]:
                 self._swap(last, i)
         self._swap(low, last)
-        self._quickSortRec(low, last-1)
-        self._quickSortRec(last+1, high)
+        self._quickSortRec(low, last)
+        self._quickSortRec(last+2, high)
+
+    def _quickSortRec(self, low, high):
+        if low < high:
+            pivot = low
+            self._swap(pivot, high-1)
+            i = low
+            j = high
+            while self.store[i] <= pivot:
+                i += 1
+            while self.store[j-1] <= pivot:
+                j -= 1
+            self._swap(i, j-1)
+            self._quickSortRec(i, j)
+            self._swap(self.size-1, i)
 
 def main1():
     dArray = DynamicArray(1)
@@ -230,6 +267,8 @@ def main1():
     dArray.removeFromBack()
     dArray.removeFromFront()
     dArray.removeFromBack() # 9 4 3 2 1 5
+    #dArray.stoogeSort()
+    #dArray.display()
     a = DynamicArray(1)
     a.addToBack(8)
     a.addToBack(7)
@@ -239,7 +278,7 @@ def main1():
     a.addToBack(3)
     a.addToBack(2)
     a.addToBack(1)
-    a.mergeSort()
+    a.quickSort()
     a.display()
 
 
