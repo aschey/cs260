@@ -224,63 +224,38 @@ class DynamicArray(FillableArray):
     def quickSort(self):
         return self._quickSortRec(0, self.size)
 
-    def n_quickSortRec(self, low, high):
-        if high == low:
-            return
-        self._swap(low, (low+high)//2)
-        last = low
-        for i in range(low+1, high):
-            if self.store[i] < self.store[low]:
-                self._swap(last, i)
-        self._swap(low, last)
-        self._quickSortRec(low, last)
-        self._quickSortRec(last+2, high)
-
     def _quickSortRec(self, low, high):
-        if low < high:
-            pivot = low
-            self._swap(pivot, high-1)
-            i = low
-            j = high
-            while self.store[i] <= pivot:
-                i += 1
-            while self.store[j-1] <= pivot:
-                j -= 1
-            self._swap(i, j-1)
-            self._quickSortRec(i, j)
-            self._swap(self.size-1, i)
+        # base case: the array is size 1
+        if high-low > 1:
+            # pivot on the first element
+            pivot = self.store[low]
+            left = low
+            right = high
+            # while the area to search is greater than 0
+            while left < right:
+                # find the first value greater than or equal to the pivot
+                while self.store[left] < pivot:
+                   left += 1
+                # find the last value less than or equal to the pivot
+                while self.store[right-1] > pivot:
+                    right -= 1
+                # if the area to search is still greater than 0, swap the values found in the previous two loops
+                if left < right:
+                    self._swap(left, right-1)
+                    left += 1
+                    right -= 1
+            # sort from the beginning to the last value less than the pivot
+            self._quickSortRec(low, right)
+            # sort from the pivot to the end
+            self._quickSortRec(left, high)
 
+        
 def main1():
-    dArray = DynamicArray(1)
-
-    dArray.addToFront(3)
-    dArray.addToBack(2)
-    dArray.addToBack(1)
-    dArray.addToFront(4)
-    dArray.addToFront(9)
-    dArray.addToBack(5)
-    dArray.addToBack(2)
-    dArray.addToBack(6)
-    dArray.addToFront(0)
-    dArray.addToFront(9) # 0 9 9 4 3 2 1 5 2 6
-    dArray.removeFromFront()
-    dArray.removeFromBack()
-    dArray.removeFromFront()
-    dArray.removeFromBack() # 9 4 3 2 1 5
-    #dArray.stoogeSort()
-    #dArray.display()
-    a = DynamicArray(1)
-    a.addToBack(8)
-    a.addToBack(7)
-    a.addToBack(6)
-    a.addToBack(5)
-    a.addToBack(4)
-    a.addToBack(3)
-    a.addToBack(2)
-    a.addToBack(1)
-    a.quickSort()
-    a.display()
-
+    import random
+    dArray = DynamicArray(20)
+    for i in range(20): 
+        dArray.addToFront(random.randint(0, 1000))
+    dArray.mergeSort()
 
 def main():
     def testStore():
