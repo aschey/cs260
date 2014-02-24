@@ -9,7 +9,8 @@
 #
 # 01/15/2014
 ################################################
-
+import sys
+sys.setrecursionlimit(100000)
 from fillablearray import FillableArray
 
 class DynamicArray(FillableArray):
@@ -252,10 +253,10 @@ class DynamicArray(FillableArray):
         
 def main1():
     import random
-    dArray = DynamicArray(20)
-    for i in range(20): 
-        dArray.addToFront(random.randint(0, 1000))
-    dArray.mergeSort()
+    dArray = DynamicArray(10000)
+    for i in range(10000): 
+        dArray.addToFront(random.randint(0, 10000))
+    dArray.quickSort()
 
 def main():
     def testStore():

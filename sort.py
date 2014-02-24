@@ -1,4 +1,4 @@
-# usage: python3 search.py alg sort maxTime maxSize numTrials replicates swaps
+# usage: python3 search.py alg maxTime maxSize numTrials replicates swaps
 from sys import argv
 from dynamicarray import DynamicArray
 from scanner import Scanner
@@ -9,24 +9,20 @@ import subprocess
 
 # either insertion, selection, stooge, merge, or quick
 alg = argv[1]
-# either sorted or unsorted
-sort = argv[2].lower()
 # the maximum time to put on the y axis
-maxTime = float(argv[3])
+maxTime = float(argv[2])
 # the maximum array size to test
-maxSize = int(argv[4])
+maxSize = int(argv[3])
 # the maximum x value to plot
 maxXVal = int(maxSize * 1.1)
 # how many data points to plot
-numTrials = int(argv[5])
+numTrials = int(argv[4])
 # the minimum array size to test
 minSize = maxSize // numTrials
 # the number of repeat tests
-numReps = int(argv[6])
+numReps = int(argv[5])
 # the number of times to shuffle the data
-swaps = int(argv[7])
-if sort != "s" and sort != "u":
-    raise ValueError("secont arg must be either 's' or 'u'")
+swaps = int(argv[6])
 
 def main():
     trialVals = []
@@ -37,10 +33,9 @@ def main():
     # loop through each array size to be graphed
     for size in range(minSize, maxSize+1, minSize):
         print("running trial", trialNum, "...")
-        searchData = createSearchArray(size)
-
         repVals = []
         for n in range(numReps):
+            searchData = createSearchArray(size)
             repVals.append(timeSearch(searchData))
         f = open("sorted.dat", "w")
         f.write(str(searchData.toArray()))
@@ -58,7 +53,7 @@ def timeSearch(searchData):
         
     elif alg == "selection":
         start = time.time()
-        searchData.insertionSort()
+        searchData.selectionSort()
         finish = time.time()
     
     elif alg == "stooge":
@@ -68,7 +63,7 @@ def timeSearch(searchData):
 
     elif alg == "merge":
         start = time.time()
-        searchData.stoogeSort()
+        searchData.mergeSort()
         finish = time.time()
 
     elif alg == "quick":

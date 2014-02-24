@@ -6,6 +6,6 @@ set ylabel "Average time taken (seconds)"
 set pointsize 0.5
 set key spacing 2
 set nokey
-set xrange [0:110]
+set xrange [0:1100]
 set autoscale y
 plot for [col=2:10] "data.txt" using 1:col with points pointtype 5 title "Size of array vs average time taken to sort
