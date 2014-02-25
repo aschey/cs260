@@ -2,7 +2,6 @@
 from sys import argv
 from dynamicarray import DynamicArray
 from scanner import Scanner
-import pylab
 import time
 import random
 import subprocess
@@ -24,6 +23,7 @@ numReps = int(argv[5])
 # the number of times to shuffle the data
 swaps = int(argv[6])
 
+
 def main():
     trialVals = []
     # the x values will be each of the size increments
@@ -37,8 +37,12 @@ def main():
         for n in range(numReps):
             searchData = createSearchArray(size)
             repVals.append(timeSearch(searchData))
+
         f = open("sorted.dat", "w")
         f.write(str(searchData.toArray()))
+        f.close()
+        
+        checkSorted(searchData)
 
         trialVals.append(repVals)
         trialNum += 1
@@ -74,10 +78,10 @@ def timeSearch(searchData):
     return finish-start
 
 def createSearchArray(size):
-    command = str.format("python3 makeintegers.py {0} 0 1 {1} > data.out", size, swaps)
+    command = str.format("python3 makeintegers.py {0} 0 1 {1} > ints.out", size, swaps)
     # create a file called data.out with the randomized array
     subprocess.call(command, shell=True)
-    numFile = Scanner("data.out")
+    numFile = Scanner("ints.out")
     searchArray = DynamicArray(size)
 
     # create a DynamicArray with the randomized search data
@@ -91,10 +95,10 @@ def createSearchArray(size):
     return searchArray
 
 def createPlot(xVals, trialVals):
-    t = open("timings.gplot", "w")
+    t = open(alg + ".gplot", "w")
     t.write("#! /usr/bin/gnuplot\n")
     t.write("set term postscript enhanced eps monochrome\n")
-    t.write("set output \"timings.eps\"\n")
+    t.write("set output \"" + alg + ".eps\"\n")
     t.write("set xlabel \"Size of array (slots)\"\n")
     t.write("set ylabel \"Average time taken (seconds)\"\n")
     t.write("set pointsize 0.5\n")
@@ -105,11 +109,11 @@ def createPlot(xVals, trialVals):
         t.write("set autoscale y\n")
     else:
         t.write("set yrange [0:" + str(maxTime) + "]\n")
-    t.write("plot for [col=2:" + str(numReps) + "] \"data.txt\" using 1:col " + 
+    t.write("plot for [col=2:" + str(numReps+1)+ "] \"trials.txt\" using 1:col " + 
             "with points pointtype 5 title \"Size of array vs average time taken to sort\n")
     t.close()
     
-    d = open("data.txt", "w")
+    d = open("trials.txt", "w")
     for x,trial in zip(xVals, trialVals):
         d.write(str(x))
         for rep in trial:
@@ -117,8 +121,16 @@ def createPlot(xVals, trialVals):
         d.write("\n")
     d.close()
 
-    subprocess.call("gnuplot timings.gplot", shell=True)
-    subprocess.call("evince timings.eps", shell=True)
+    subprocess.call("gnuplot " + alg + ".gplot", shell=True)
+    subprocess.call("evince " + alg + ".eps", shell=True)
+
+def checkSorted(sortedData):
+    for i in range(sortedData.getSize()-1):
+        # if any number is out of order, the array isn't sorted
+        if sortedData.get(i) > sortedData.get(i+1):
+            print("ERROR: Data not sorted correctly")
+            subprocess.call("geany sorted.dat", shell=True)
+            exit()
 
 if __name__ == "__main__":
     main()
