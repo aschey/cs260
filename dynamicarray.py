@@ -253,10 +253,10 @@ class DynamicArray(FillableArray):
         
 def main1():
     import random
-    dArray = DynamicArray(10000)
-    for i in range(10000): 
-        dArray.addToFront(random.randint(0, 10000))
-    dArray.quickSort()
+    dArray = DynamicArray(3000)
+    for i in range(3000): 
+        dArray.addToFront(i)
+    dArray.stoogeSort()
 
 def main():
     def testStore():

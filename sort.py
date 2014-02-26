@@ -5,7 +5,9 @@ from scanner import Scanner
 import time
 import random
 import subprocess
-
+if len(argv) < 7:
+    print("usage: python3 search.py algorithm maxTime numTrials replicates swaps")
+    exit()
 # either insertion, selection, stooge, merge, or quick
 alg = argv[1]
 # the maximum time to put on the y axis
@@ -34,6 +36,7 @@ def main():
     for size in range(minSize, maxSize+1, minSize):
         print("running trial", trialNum, "...")
         repVals = []
+        #searchData = createSearchArray(size)
         for n in range(numReps):
             searchData = createSearchArray(size)
             repVals.append(timeSearch(searchData))
@@ -46,7 +49,6 @@ def main():
 
         trialVals.append(repVals)
         trialNum += 1
-
     createPlot(xVals, trialVals)
 
 def timeSearch(searchData):
@@ -91,14 +93,20 @@ def createSearchArray(size):
             break
         else:
             searchArray.addToBack(token)
-
+    
     return searchArray
 
 def createPlot(xVals, trialVals):
-    t = open(alg + ".gplot", "w")
+    filename = alg
+    if swaps == 0:
+        filename += "_sorted"
+    else:
+        filename += "_unsorted"
+
+    t = open("graphs/" + filename + ".gplot", "w")
     t.write("#! /usr/bin/gnuplot\n")
     t.write("set term postscript enhanced eps monochrome\n")
-    t.write("set output \"" + alg + ".eps\"\n")
+    t.write("set output \"graphs/" + filename + ".eps\"\n")
     t.write("set xlabel \"Size of array (slots)\"\n")
     t.write("set ylabel \"Average time taken (seconds)\"\n")
     t.write("set pointsize 0.5\n")
@@ -106,7 +114,11 @@ def createPlot(xVals, trialVals):
     t.write("set nokey\n")
     t.write("set xrange [0:" + str(maxXVal) + "]\n")
     if maxTime == -1:
-        t.write("set autoscale y\n")
+        #t.write("set yrange [0:GPVAL_DATA_Y_MAX]\n")
+        #t.write("set autoscale ymax\n")
+        #t.write("set ymin 0\n")
+        t.write("set yrange [0:*]\n")
+        t.write("set autoscale ymax\n")
     else:
         t.write("set yrange [0:" + str(maxTime) + "]\n")
     t.write("plot for [col=2:" + str(numReps+1)+ "] \"trials.txt\" using 1:col " + 
@@ -121,8 +133,8 @@ def createPlot(xVals, trialVals):
         d.write("\n")
     d.close()
 
-    subprocess.call("gnuplot " + alg + ".gplot", shell=True)
-    subprocess.call("evince " + alg + ".eps", shell=True)
+    subprocess.call("gnuplot graphs/" + filename + ".gplot", shell=True)
+    subprocess.call("evince graphs/" + filename + ".eps", shell=True)
 
 def checkSorted(sortedData):
     for i in range(sortedData.getSize()-1):
