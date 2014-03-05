@@ -109,20 +109,17 @@ def createPlot(xVals, trialVals):
     t.write("set output \"graphs/" + filename + ".eps\"\n")
     t.write("set xlabel \"Size of array (slots)\"\n")
     t.write("set ylabel \"Average time taken (seconds)\"\n")
+    t.write("set title \"sdfsd\"\n")
     t.write("set pointsize 0.5\n")
     t.write("set key spacing 2\n")
     t.write("set nokey\n")
     t.write("set xrange [0:" + str(maxXVal) + "]\n")
     if maxTime == -1:
-        #t.write("set yrange [0:GPVAL_DATA_Y_MAX]\n")
-        #t.write("set autoscale ymax\n")
-        #t.write("set ymin 0\n")
         t.write("set yrange [0:*]\n")
         t.write("set autoscale ymax\n")
     else:
         t.write("set yrange [0:" + str(maxTime) + "]\n")
-    t.write("plot for [col=2:" + str(numReps+1)+ "] \"trials.txt\" using 1:col " + 
-            "with points pointtype 5 title \"Size of array vs average time taken to sort\n")
+    t.write("plot for [col=2:" + str(numReps+1)+ "] \"trials.txt\" using 1:col with points pointtype 5")
     t.close()
     
     d = open("trials.txt", "w")

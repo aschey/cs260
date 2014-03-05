@@ -1,12 +1,12 @@
 #! /usr/bin/gnuplot
 set term postscript enhanced eps monochrome
-set output "selection_sorted.eps"
+set output "graphs/selection_sorted.eps"
 set xlabel "Size of array (slots)"
 set ylabel "Average time taken (seconds)"
 set pointsize 0.5
 set key spacing 2
 set nokey
-set xrange [0:11000]
+set xrange [0:1100]
 set yrange [0:*]
 set autoscale ymax
 plot for [col=2:11] "trials.txt" using 1:col with points pointtype 5 title "Size of array vs average time taken to sort
