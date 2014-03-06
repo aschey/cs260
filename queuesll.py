@@ -33,14 +33,16 @@ class QueueSLL(object):
 
 def main():
     a = QueueSLL()
-    for i in range(100):
-        a.enqueue(i)
-    while not a.isEmpty():
-        print(a.dequeue())
-    for i in range(5):
-        a.enqueue(i)
-    while not a.isEmpty():
-        print(a.dequeue())
+    a.enqueue(1)
+    a.dequeue()
+    #for i in range(100):
+    #    a.enqueue(i)
+    #while not a.isEmpty():
+    #    print(a.dequeue())
+    #for i in range(5):
+    #    a.enqueue(i)
+    #while not a.isEmpty():
+    #    print(a.dequeue())
 
 if __name__ == "__main__":
     main()

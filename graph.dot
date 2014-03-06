@@ -1,0 +1,5 @@
+digraph {
+graph [ordering="out"];1 -> null0 [shape=point];
+null0 [shape=point];
+1 -> null1 [shape=point];
+}

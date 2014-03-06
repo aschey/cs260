@@ -1,6 +1,8 @@
 from binarysearchtree import BinarySearchTree
 from scanner import Scanner
-bst = BinarySearchTree
+import subprocess
+from queuesll import QueueSLL
+bst = BinarySearchTree()
 while True:
     print("Menu")
     print("----")
@@ -12,33 +14,70 @@ while True:
     print("t: test tree for correctness")
     print("s XXX YYY: find node XXX and change it to YYY")
     print("r XXX: rotate node with value XXX one level closer to root")
+    print("e: exit")
 
-    command = input("input a command")
+    command = input("input a command: ")
     option = command[0]
     value = command[2:]
     
-    if option == "f":
+    if option == "e":
+        exit()
+
+    elif option == "f":
         filename = value
         scan = Scanner(filename)
         while True:
             nextInt = scan.readint()
-            if nextInt = "":
+            if nextInt == "":
                 break
             bst.insert(nextInt)
+        scan.close()
 
     elif option == "v":
-        pass
+        graph = open("graph.dot", "w")
+        queue = QueueSLL()
+        nullNum = 0
+        graph.write("digraph {\n")
+        graph.write("graph [ordering=\"out\"];")
+        queue.enqueue(bst.getRoot())
+        while not queue.isEmpty():
+            current = queue.dequeue()
+            curVal = str(current.getValue())
+            graph.write(curVal + " -> ")
+            if current.getLeft() != None:
+                left = current.getLeft()
+                graph.write(curVal + " -> " + str(left.getValue()) + ";\n")
+                queue.enqueue(left)
+            else:
+                null = "null" + str(nullNum)
+                graph.write(null + " [shape=point];\n")
+                graph.write(curVal + " -> " + null" + str(nullNum) + " [shape=point];\n")
+                nullNum += 1
+            graph.write(curVal + " -> ")
+            if current.getRight() != None:
+                right = current.getRight()
+                graph.write(str(right.getValue()) + "\n")
+                queue.enqueue(right)
+            else:
+                graph.write("null" + str(nullNum) + " [shape=point];\n")
+                nullNum += 1
+        graph.write("}")
+        graph.close()
+        subprocess.call("dot -Teps graph.dot -o graph.eps", shell=True)
+        subprocess.call("evince graph.eps", shell=True)
+        
 
     elif option == "t":
         print(bst.testCorrectness())
     
     elif option == "s":
-        oldNode
-        self.replace(
+        oldNode = value.split()[0]
+        newNode = value.split()[1]
+        bst.replace(oldNode, newNode)
 
     value = int(value)
 
-    elif option == "i":
+    if option == "i":
         bst.insert(value)
 
     elif option == "l":

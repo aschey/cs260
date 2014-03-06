@@ -1,4 +1,6 @@
 from binarynode import BinaryNode
+from queuecdll import QueueCDLL
+from queuesll import QueueSLL
 class BinarySearchTree(object):
     def __init__(self):
         self.root = None
@@ -98,8 +100,21 @@ class BinarySearchTree(object):
             self._printInOrderRec(current.getRight())
             #print(node.getValue())
 
+    def levelOrderTraverse(self):
+        queue = QueueSLL()
+        queue.enqueue(self.root)
+        vals = []
+        while not queue.isEmpty():
+            current = queue.dequeue()
+            vals.append(current)
+            if current.getLeft() != None:
+                queue.enqueue(current.getLeft())
+            if current.getRight() != None:
+                queue.enqueue(current.getRight())
+        return vals
+
     def testCorrectness(self):
-        return self._testCorrectnessRec(self.root, 1, 8)
+        return self._testCorrectnessRec(self.root, self.minVal, self.maxVal)
 
     def _testCorrectnessRec(self, current, minVal, maxVal):
         if current == None:
@@ -110,6 +125,9 @@ class BinarySearchTree(object):
                 current.getValue()-1) and self._testCorrectnessRec(current.getRight(), 
                         current.getValue()+1, maxVal)
 
+    def getRoot(self):
+        return self.root
+
 def main():
     bst = BinarySearchTree()
     bst.insert(3)
@@ -119,11 +137,14 @@ def main():
     bst.insert(7)
     bst.insert(5)
     bst.insert(8)
-    bst.replace(3, 5)
-    print(bst.find(3))
-    bst.printInOrder()
+    #bst.replace(3, 5)
+    a = bst.levelOrderTraverse()
+    for i in a:
+        print(i.getValue())
+    #print(bst.find(3))
+    #bst.printInOrder()
     #bst.delete(4)
-    print(bst.testCorrectness())
+    #print(bst.testCorrectness())
     #a = bst._findMin(bst.root.getRight())
     #print(a.getValue())
     #bst.printInOrder(bst.root)
