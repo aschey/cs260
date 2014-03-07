@@ -1,5 +1,12 @@
 digraph {
-graph [ordering="out"];1 -> null0 [shape=point];
-null0 [shape=point];
-1 -> null1 [shape=point];
+graph [ordering="out"];null0 [shape=point];
+4 -> null0;
+4 -> 5;
+null1 [shape=point];
+5 -> null1;
+5 -> 6;
+null2 [shape=point];
+6 -> null2;
+null3 [shape=point];
+6 -> null3;
 }

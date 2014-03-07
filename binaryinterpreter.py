@@ -1,8 +1,25 @@
 from binarysearchtree import BinarySearchTree
+from binarynode import BinaryNode
 from scanner import Scanner
 import subprocess
 from queuesll import QueueSLL
+
+def writeToGraph(current, getDirectionNode, queue, graph):
+    curVal = str(current.getValue())
+    directionNode = getDirectionNode()
+    if directionNode != None:
+        graph.write(curVal + " -> " + str(directionNode.getValue()) + ";\n")
+        queue.enqueue(directionNode)
+    else:
+        global nullNum
+        null = "null" + str(nullNum)
+        graph.write(null + " [shape=point];\n")
+        graph.write(curVal + " -> " + null + ";\n")
+        nullNum += 1
+    return queue
+
 bst = BinarySearchTree()
+
 while True:
     print("Menu")
     print("----")
@@ -12,6 +29,7 @@ while True:
     print("d XXX: delete value XXX from tree")
     print("v: visualize the tree")
     print("t: test tree for correctness")
+    print("c: correct the tree")
     print("s XXX YYY: find node XXX and change it to YYY")
     print("r XXX: rotate node with value XXX one level closer to root")
     print("e: exit")
@@ -36,56 +54,50 @@ while True:
     elif option == "v":
         graph = open("graph.dot", "w")
         queue = QueueSLL()
+        global nullNum
         nullNum = 0
         graph.write("digraph {\n")
         graph.write("graph [ordering=\"out\"];")
         queue.enqueue(bst.getRoot())
         while not queue.isEmpty():
             current = queue.dequeue()
-            curVal = str(current.getValue())
-            graph.write(curVal + " -> ")
-            if current.getLeft() != None:
-                left = current.getLeft()
-                graph.write(curVal + " -> " + str(left.getValue()) + ";\n")
-                queue.enqueue(left)
-            else:
-                null = "null" + str(nullNum)
-                graph.write(null + " [shape=point];\n")
-                graph.write(curVal + " -> " + null" + str(nullNum) + " [shape=point];\n")
-                nullNum += 1
-            graph.write(curVal + " -> ")
-            if current.getRight() != None:
-                right = current.getRight()
-                graph.write(str(right.getValue()) + "\n")
-                queue.enqueue(right)
-            else:
-                graph.write("null" + str(nullNum) + " [shape=point];\n")
-                nullNum += 1
+            queue = writeToGraph(current, current.getLeft, queue, graph)
+            queue = writeToGraph(current, current.getRight, queue, graph)
         graph.write("}")
         graph.close()
         subprocess.call("dot -Teps graph.dot -o graph.eps", shell=True)
         subprocess.call("evince graph.eps", shell=True)
-        
 
     elif option == "t":
-        print(bst.testCorrectness())
+        print(bst.getIncorrectNode() == None)
+        input()
     
     elif option == "s":
-        oldNode = value.split()[0]
-        newNode = value.split()[1]
-        bst.replace(oldNode, newNode)
+        oldVal = int(value.split()[0])
+        newVal = int(value.split()[1])
+        bst.replace(bst.find(oldVal), BinaryNode(newVal))
+
+    elif option == "c":
+        bst.correct()
+
+    if option in "fvtsc":
+        continue
 
     value = int(value)
 
     if option == "i":
-        bst.insert(value)
+        bst.insert(BinaryNode(value))
 
     elif option == "l":
         foundVal = bst.find(value)
         print(foundVal != None)
+        input()
 
     elif option == "d":
         bst.delete(value)
 
     elif option == "r":
         pass
+
+    else:
+        print("invalid command")
