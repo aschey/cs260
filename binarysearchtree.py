@@ -1,5 +1,4 @@
 from binarynode import BinaryNode
-from queuecdll import QueueCDLL
 from queuesll import QueueSLL
 class BinarySearchTree(object):
     def __init__(self):
@@ -81,6 +80,7 @@ class BinarySearchTree(object):
                 self.root = delNode.getLeft()
                 self.root.setParent(None)
         else:
+            #print(self._findMin(right))
             replaceNode = self._findMin(right)
             rNode = BinaryNode(replaceNode.getValue())
             self.replace(delNode, rNode)
@@ -104,9 +104,9 @@ class BinarySearchTree(object):
         oldNode.setParent(None)
 
     def _findMin(self, current):
-        if current.getLeft() == None:
-            return current
-        self._findMin(current.getLeft())
+        if current.getLeft() != None:
+            self._findMin(current.getLeft())
+        return current
 
     def printInOrder(self):
         return self._printInOrderRec(self.root)
@@ -151,40 +151,40 @@ class BinarySearchTree(object):
         self.delete(offender)
         self.insert(BinaryNode(offender.getValue()))
 
+    def rotate(self, c):
+        p = c.getParent()
+        if p == None:
+            raise ValueError("cannot rotate root element")
+        gp = p.getParent()
+        if c == p.getLeft():
+            p.setLeft(c.getRight())
+            c.setRight(p)
+            p.setParent(c)
+        else:
+            p.setRight(c.getLeft())
+            if p.getRight() != None:
+                p.getRight().setParent(p)
+            c.setLeft(p)
+            p.setParent(c)
+        if gp == None:
+            self.root = c
+        elif p == gp.getLeft():
+            gp.setLeft(c)
+        else:
+            gp.setRight(c)
+        c.setParent(gp)
+
     def getRoot(self):
         return self.root
 
 def main():
     bst = BinarySearchTree()
-    #bst.insert(3)
-    #bst.insert(2)
-    #bst.insert(4)
-    #bst.insert(1)
-    #bst.insert(7)
-    #bst.insert(5)
-    #bst.insert(8)
-    #bst.delete()
-    #print(bst.root.getRight().getParent().getValue())
     bst.insert(BinaryNode(3))
+    bst.insert(BinaryNode(2))
     bst.insert(BinaryNode(4))
+    bst.insert(BinaryNode(3))
+    bst.insert(BinaryNode(6))
     bst.insert(BinaryNode(5))
-    bst.replace(bst.find(3), BinaryNode(6))
-    bst.delete(bst.find(6))
-    bst.insert
-    #bst.correct()
-    print(bst.root.getRight().getParent().getValue())
-    #bst.printInOrder()
-    #bst.replace(3, 5)
-    #a = bst.levelOrderTraverse()
-    #for i in a:
-    #    print(i.getValue())
-    #print(bst.find(3))
-    #bst.printInOrder()
-    #bst.delete(4)
-    #print(bst.testCorrectness())
-    #a = bst._findMin(bst.root.getRight())
-    #print(a.getValue())
-    #bst.printInOrder(bst.root)
-    #print(bst.root.getLeft().getLeft().getValue())
+    bst.delete(bst.find(3))
 if __name__ == "__main__":
     main()

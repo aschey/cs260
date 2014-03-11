@@ -3,20 +3,47 @@ from binarynode import BinaryNode
 from scanner import Scanner
 import subprocess
 from queuesll import QueueSLL
+class GraphWriter(object):
+    def __init__(self, filename, bst):
+        self.nodeNum = 1
+        self.nullNum = 0
+        self.filename = filename
+        self.graph = open(filename + ".dot", "w")
+        self.queue = QueueSLL()
+        self.bst = bst
 
-def writeToGraph(current, getDirectionNode, queue, graph):
-    curVal = str(current.getValue())
-    directionNode = getDirectionNode()
-    if directionNode != None:
-        graph.write(curVal + " -> " + str(directionNode.getValue()) + ";\n")
-        queue.enqueue(directionNode)
-    else:
-        global nullNum
-        null = "null" + str(nullNum)
-        graph.write(null + " [shape=point];\n")
-        graph.write(curVal + " -> " + null + ";\n")
-        nullNum += 1
-    return queue
+    def createGraph(self):
+        self.graph.write("digraph {\n")
+        self.graph.write("graph [ordering=\"out\"];\n")
+        self.queue.enqueue(self.bst.getRoot())
+        self.graph.write("Node0 [label=" + str(self.bst.getRoot().getValue()) + "];\n")
+        localRootNode = 0
+        while not self.queue.isEmpty():
+            current = self.queue.dequeue()
+            curNode = "Node" + str(localRootNode)
+            self.writeToGraph(curNode, current.getLeft())
+            self.writeToGraph(curNode, current.getRight())
+            localRootNode += 1
+        self.graph.write("}")
+        self.graph.close()
+
+    def writeToGraph(self, curNode, directionNode):
+        if directionNode != None:
+            nextNode = "Node" + str(self.nodeNum)
+            self.nodeNum += 1
+            self.graph.write(nextNode + " [label=" + str(directionNode.getValue()) + "];\n")
+            self.graph.write(curNode + " -> " + nextNode + ";\n")
+            self.queue.enqueue(directionNode)
+        else:
+            null = "Null" + str(self.nullNum)
+            self.nullNum += 1
+            self.graph.write(null + " [shape=point]\n;")
+            self.graph.write(curNode + " -> " + null + ";\n")
+
+    def display(self):
+        subprocess.call("dot -Teps " + self.filename + ".dot -o " +
+                self.filename + ".eps", shell=True)
+        subprocess.call("evince " + self.filename + ".eps", shell=True)
 
 bst = BinarySearchTree()
 
@@ -52,21 +79,9 @@ while True:
         scan.close()
 
     elif option == "v":
-        graph = open("graph.dot", "w")
-        queue = QueueSLL()
-        global nullNum
-        nullNum = 0
-        graph.write("digraph {\n")
-        graph.write("graph [ordering=\"out\"];")
-        queue.enqueue(bst.getRoot())
-        while not queue.isEmpty():
-            current = queue.dequeue()
-            queue = writeToGraph(current, current.getLeft, queue, graph)
-            queue = writeToGraph(current, current.getRight, queue, graph)
-        graph.write("}")
-        graph.close()
-        subprocess.call("dot -Teps graph.dot -o graph.eps", shell=True)
-        subprocess.call("evince graph.eps", shell=True)
+        gw = GraphWriter("graph", bst)
+        gw.createGraph()
+        gw.display()
 
     elif option == "t":
         print(bst.getIncorrectNode() == None)
@@ -94,10 +109,10 @@ while True:
         input()
 
     elif option == "d":
-        bst.delete(value)
+        bst.delete(bst.find(value))
 
     elif option == "r":
-        pass
+        bst.rotate(bst.find(value))
 
     else:
         print("invalid command")
