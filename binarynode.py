@@ -25,3 +25,12 @@ class BinaryNode(object):
 
     def setParent(self, node):
         self.parent = node
+
+    def isLeftChild(self):
+        return self.parent.left == self
+
+    def isRightChild(self):
+        return self.parent.right == self
+
+    def hasChildren(self):
+        return self.left != None or self.right != None

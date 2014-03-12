@@ -31,7 +31,8 @@ class GraphWriter(object):
         if directionNode != None:
             nextNode = "Node" + str(self.nodeNum)
             self.nodeNum += 1
-            self.graph.write(nextNode + " [label=" + str(directionNode.getValue()) + "];\n")
+            self.graph.write(nextNode + " [label=" + str(directionNode.getValue()) + 
+                    "];\n")
             self.graph.write(curNode + " -> " + nextNode + ";\n")
             self.queue.enqueue(directionNode)
         else:
@@ -79,9 +80,13 @@ while True:
         scan.close()
 
     elif option == "v":
-        gw = GraphWriter("graph", bst)
-        gw.createGraph()
-        gw.display()
+        if bst.getRoot() == None:
+            print("Error: the tree is empty")
+            input()
+        else:
+            gw = GraphWriter("graph", bst)
+            gw.createGraph()
+            gw.display()
 
     elif option == "t":
         print(bst.getIncorrectNode() == None)
@@ -101,7 +106,7 @@ while True:
     value = int(value)
 
     if option == "i":
-        bst.insert(BinaryNode(value))
+        bst.insert(value)
 
     elif option == "l":
         foundVal = bst.find(value)
