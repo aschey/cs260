@@ -27,9 +27,13 @@ class BinaryNode(object):
         self.parent = node
 
     def isLeftChild(self):
+        if self.parent == None or self.parent.left == None:
+            return False
         return self.parent.left == self
 
     def isRightChild(self):
+        if self.parent == None or self.parent.right == None:
+            return False
         return self.parent.right == self
 
     def hasChildren(self):

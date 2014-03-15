@@ -34,7 +34,6 @@ class BinarySearchTree(object):
             else:
                 self._insertRec(current.getRight(), node)
 
-
     def find(self, value):
         """
         recursive version of find
@@ -47,15 +46,28 @@ class BinarySearchTree(object):
         """
         if current == None or current.getValue() == value:
             return current
-        elif value < current.getValue():
+        if value < current.getValue():
             return self._findRec(value, current.getLeft())
         else:
             return self._findRec(value, current.getRight())
+
+    def bruteForceFind(self, value):
+        return self._bruteForceFindRec(value, self.root)
+
+    def _bruteForceFindRec(self, value, current):
+        if current.getValue() == value:
+            return current
+        if current.getLeft() != None:
+            return self._bruteForceFindRec(value, current.getLeft())
+        if current.getRight() != None:
+            return self._bruteForceFindRec(value, current.getRight())
 
     def delete(self, delNode):
         """
         removes the node from the tree
         """
+        if delNode == None:
+            raise ValueError("Node is not in the tree")
         left = delNode.getLeft()
         right = delNode.getRight()
         parent = delNode.getParent()
@@ -117,6 +129,8 @@ class BinarySearchTree(object):
         """
         replaces oldNode with newNode
         """
+        if oldNode == None:
+            raise ValueError("Node is not in the tree")
         if oldNode == self.root:
             self.root = newNode
         if oldNode.getLeft() != None:
@@ -266,8 +280,7 @@ def main():
     bst.insert(8)
     bst.insert(9)
     bst.insert(3)
-    bst.replace(bst.find(4), BinaryNode(23))
-    bst.correct()
-    print(bst.isCorrect())
+    a = bst.bruteForceFind(5)
+    print(a.getValue())
 if __name__ == "__main__":
     main()
