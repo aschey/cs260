@@ -1,58 +1,61 @@
 from binarynode import BinaryNode
 from queuesll import QueueSLL
-import copy
 class BinarySearchTree(object):
     def __init__(self):
         self.root = None
-        self.incorrectNode = None
 
     def insert(self, n):
+        """
+        inserts a node with value n into the tree
+        """
         node = BinaryNode(n)
         value = node.getValue()
+        # use the first value inserted as the root
         if self.root == None:
             self.root = node
-            self.maxVal = value
-            self.minVal = value
         else:
-            self._insertHelper(self.root, node)
+            self._insertRec(self.root, node)
     
-    def _insertHelper(self, current, node):
+    def _insertRec(self, current, node):
+        """
+        recursive helper for insert
+        """
         if node.getValue() < current.getValue():
             if current.getLeft() == None:
+                # we've reached the first empty slot where the node will fit
                 current.setLeft(node)
                 node.setParent(current)
             else:
-                self._insertHelper(current.getLeft(), node)
+                self._insertRec(current.getLeft(), node)
         else:
             if current.getRight() == None:
                 current.setRight(node)
                 node.setParent(current)
             else:
-                self._insertHelper(current.getRight(), node)
+                self._insertRec(current.getRight(), node)
+
 
     def find(self, value):
-        current = self.root
-        while current != None:
-            if current.getValue() == value:
-                return current
-            if value < current.getValue():
-                current = current.getLeft()
-            else:
-                current = current.getRight()
+        """
+        recursive version of find
+        """
+        return self._findRec(value, self.root)
 
-
-    def findRec(self, value):
-        return self._findRecHelper(value, self.root)
-
-    def _findRecHelper(self, value, current):
+    def _findRec(self, value, current):
+        """
+        recursive helper for findRec
+        """
         if current == None or current.getValue() == value:
             return current
         elif value < current.getValue():
-            return self._findRecHelper(value, current.getLeft())
+            return self._findRec(value, current.getLeft())
         else:
-            return self._findRecHelper(value, current.getRight())
+            return self._findRec(value, current.getRight())
 
     def delete(self, delNode):
+        """
+        removes the node from the tree
+        """
         left = delNode.getLeft()
         right = delNode.getRight()
         parent = delNode.getParent()
@@ -76,12 +79,16 @@ class BinarySearchTree(object):
                 self.delete(successor)
 
     def _getSuccessor(self, current):
+        """
+        finds the smallest value in the subtree, starting at the right child
+        of current
+        """
         if current.getRight() != None:
             return self._getSuccessorRec(current.getRight())
 
     def _getSuccessorRec(self, current):
         """
-        finds the smallest value in the subtree
+        recursive helper for getSuccessor
         """
         if current.getLeft() != None:
             return self._getSuccessorRec(current.getLeft())
@@ -89,12 +96,16 @@ class BinarySearchTree(object):
             return current
 
     def _getPredecessor(self, current):
+        """
+        finds the largest value in the subtree, starting at the left child
+        of current
+        """
         if current.getLeft() != None:
             return self._getPredecessorRec(current.getLeft())
     
     def _getPredecessorRec(self, current):
         """
-        finds the largest value in the subtree
+        recursive helper for getPredecessor
         """
         if current.getRight() != None:
             return self._getPredecessorRec(current.getRight())
@@ -103,6 +114,9 @@ class BinarySearchTree(object):
 
 
     def replace(self, oldNode, newNode):
+        """
+        replaces oldNode with newNode
+        """
         if oldNode == self.root:
             self.root = newNode
         if oldNode.getLeft() != None:
@@ -110,7 +124,7 @@ class BinarySearchTree(object):
         if oldNode.getRight() != None:
             oldNode.getRight().setParent(newNode)
         if oldNode.getParent() != None:
-            if newNode.getValue() < oldNode.getParent().getValue():
+            if oldNode.isLeftChild():
                 oldNode.getParent().setLeft(newNode)
             else:
                 oldNode.getParent().setRight(newNode)
@@ -121,23 +135,28 @@ class BinarySearchTree(object):
         oldNode.setRight(None)
         oldNode.setParent(None)
 
-    def _findMin(self, current):
-        if current.getLeft() != None:
-            self._findMin(current.getLeft())
-        return current
-
     def printInOrder(self):
+        """
+        prints the nodes in order from least to greatest
+        """
         return self._printInOrderRec(self.root)
 
     def _printInOrderRec(self, current):
+        """
+        recursive helper for printInOrder
+        """
         if current != None:
             self._printInOrderRec(current.getLeft())
             print(current.getValue())
             self._printInOrderRec(current.getRight())
 
     def levelOrderTraverse(self):
+        """
+        returns an array of all the nodes in level order
+        """
         queue = QueueSLL()
         queue.enqueue(self.root)
+        vals = []
         while not queue.isEmpty():
             current = queue.dequeue()
             vals.append(current)
@@ -147,40 +166,71 @@ class BinarySearchTree(object):
                 queue.enqueue(current.getRight())
         return vals
 
+    def isCorrect(self):
+        return self.getIncorrectNode() == None
+
     def getIncorrectNode(self):
-        return self._getIncorrectNodeRec(self.root, self.getMinVal(self.root),
-                self.getMaxVal(self.root))
+        """
+        returns the first node that is out of place in the tree
+        """
+        return self._getIncorrectNodeRec(self.root, self.findMin(),
+                self.findMax())
 
     def _getIncorrectNodeRec(self, current, minVal, maxVal):
+        """
+        recursive helper for getIncorrectNode
+        """
         if current == None:
-            return True
+            return None
         if current.getValue() < minVal or current.getValue() > maxVal:
-            self.incorrectNode = current
-            return False
-        return self._getIncorrectNodeRec(current.getLeft(), minVal, 
-                current.getValue()-1) and \
+            return current
+        if self._getIncorrectNodeRec(current.getLeft(), minVal, 
+                current.getValue()-1) == None and \
                         self._getIncorrectNodeRec(current.getRight(), 
-                        current.getValue()+1, maxVal)
+                                current.getValue()+1, maxVal) == None:
+                            return None
+
+
+    def findMin(self):
+        """
+        returns the smallest value in the tree
+        """
+        return self._findMinRec(self.root)
     
-    def getMinVal(self, current):
+    def _findMinRec(self, current):
+        """
+        recursive helper for findMin
+        """
         if current.getLeft() != None:
-            return self.getMinVal(current.getLeft())
+            return self._findMinRec(current.getLeft())
         else:
             return current.getValue()
 
-    def getMaxVal(self, current):
+    def findMax(self):
+        """
+        returns the maximum value in the tree
+        """
+        return self._findMaxRec(self.root)
+
+    def _findMaxRec(self, current):
+        """
+        recursive helper for findMax
+        """
         if current.getRight() != None:
-            return self.getMaxVal(current.getRight())
-        else:
-            return current.getValue()
+            return self._findMaxRec(current.getRight())
+        return current.getValue()
     
     def correct(self):
-        self.getIncorrectNode()
-        if self.incorrectNode == None:
-            return
-        self.delete(self.incorrectNode)
-        self.insert(BinaryNode(self.incorrectNode.getValue()))
-        self.incorrectNode = None
+        """
+        puts any incorrect nodes in their correct place
+        """
+        while True:
+            offender = self.getIncorrectNode()
+            print(offender)
+            if offender == None:
+                break
+            self.delete(offender)
+            self.insert(offender.getValue())
 
     def rotate(self, current):
         parent = current.getParent()
@@ -213,7 +263,11 @@ def main():
     bst.insert(2)
     bst.insert(5)
     bst.insert(4)
-    bst.delete(bst.find(2))
-    print(bst.root.right.parent.value)
+    bst.insert(8)
+    bst.insert(9)
+    bst.insert(3)
+    bst.replace(bst.find(4), BinaryNode(23))
+    bst.correct()
+    print(bst.isCorrect())
 if __name__ == "__main__":
     main()
