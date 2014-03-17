@@ -57,7 +57,6 @@ while True:
     print("d XXX: delete value XXX from tree")
     print("v: visualize the tree")
     print("t: test tree for correctness")
-    print("c: correct the tree")
     print("s XXX YYY: find node XXX and change it to YYY")
     print("r XXX: rotate node with value XXX one level closer to root")
     print("e: exit")
@@ -96,9 +95,6 @@ while True:
         oldVal = int(value.split()[0])
         newVal = int(value.split()[1])
         bst.replace(bst.find(oldVal), BinaryNode(newVal))
-
-    elif option == "c":
-        bst.correct()
 
     if option in "fvtsc":
         continue

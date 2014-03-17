@@ -36,13 +36,13 @@ class BinarySearchTree(object):
 
     def find(self, value):
         """
-        recursive version of find
+        searches for the first node with the given value
         """
         return self._findRec(value, self.root)
 
     def _findRec(self, value, current):
         """
-        recursive helper for findRec
+        recursive helper for find
         """
         if current == None or current.getValue() == value:
             return current
@@ -131,6 +131,7 @@ class BinarySearchTree(object):
         """
         if oldNode == None:
             raise ValueError("Node is not in the tree")
+
         if oldNode == self.root:
             self.root = newNode
         if oldNode.getLeft() != None:
@@ -181,29 +182,24 @@ class BinarySearchTree(object):
         return vals
 
     def isCorrect(self):
-        return self.getIncorrectNode() == None
-
-    def getIncorrectNode(self):
         """
         returns the first node that is out of place in the tree
         """
-        return self._getIncorrectNodeRec(self.root, self.findMin(),
-                self.findMax())
+        return self._getIncorrectNodeRec(self.root, self.root.getValue(),
+                self.root.getValue())
 
-    def _getIncorrectNodeRec(self, current, minVal, maxVal):
+    def _isCorrectRec(self, current, minVal, maxVal):
         """
         recursive helper for getIncorrectNode
         """
         if current == None:
-            return None
+            return True
         if current.getValue() < minVal or current.getValue() > maxVal:
-            return current
-        if self._getIncorrectNodeRec(current.getLeft(), minVal, 
-                current.getValue()-1) == None and \
+            return False
+        return self._getIncorrectNodeRec(current.getLeft(), minVal, 
+                current.getValue()-1) and \
                         self._getIncorrectNodeRec(current.getRight(), 
-                                current.getValue()+1, maxVal) == None:
-                            return None
-
+                                current.getValue()+1, maxVal)
 
     def findMin(self):
         """
@@ -251,10 +247,12 @@ class BinarySearchTree(object):
         if parent == None:
             raise ValueError("cannot rotate root element")
         grandparent = parent.getParent()
+        # right rotation
         if current == parent.getLeft():
             parent.setLeft(current.getRight())
             current.setRight(parent)
             parent.setParent(current)
+        # left rotation
         else:
             parent.setRight(current.getLeft())
             if parent.getRight() != None:
@@ -263,7 +261,7 @@ class BinarySearchTree(object):
             parent.setParent(current)
         if grandparent == None:
             self.root = current
-        elif parent == grandparent.getLeft():
+        elif parent.isLeftChild():
             grandparent.setLeft(current)
         else:
             grandparent.setRight(current)
@@ -280,7 +278,5 @@ def main():
     bst.insert(8)
     bst.insert(9)
     bst.insert(3)
-    a = bst.bruteForceFind(5)
-    print(a.getValue())
 if __name__ == "__main__":
     main()
