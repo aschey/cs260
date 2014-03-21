@@ -62,6 +62,8 @@ while True:
     print("e: exit")
 
     command = input("input a command: ")
+    if command == "":
+        continue
     option = command[0]
     value = command[2:]
     
@@ -70,7 +72,12 @@ while True:
 
     elif option == "f":
         filename = value
-        scan = Scanner(filename)
+        try:
+            scan = Scanner(filename)
+        except IOError:
+            print("file not found")
+            input()
+            continue
         while True:
             nextInt = scan.readint()
             if nextInt == "":
@@ -88,15 +95,26 @@ while True:
             gw.display()
 
     elif option == "t":
-        print(bst.getIncorrectNode() == None)
+        isCorrect = bst.isCorrect()
+        if isCorrect:
+            print("The tree is correct")
+        else:
+            print("The tree is incorrect")
+            print("Incorrect node:", bst.incorrectNode.getValue())
         input()
     
     elif option == "s":
         oldVal = int(value.split()[0])
         newVal = int(value.split()[1])
-        bst.replace(bst.find(oldVal), BinaryNode(newVal))
+        node = bst.find(oldVal)
+        node.setValue(newVal)
 
-    if option in "fvtsc":
+    if option in "fvts":
+        continue
+
+    if option not in "inldr":
+        print("invalid option")
+        input()
         continue
 
     value = int(value)
@@ -113,7 +131,9 @@ while True:
         bst.delete(bst.find(value))
 
     elif option == "r":
-        bst.rotate(bst.find(value))
-
-    else:
-        print("invalid command")
+        try:
+            bst.rotate(bst.find(value))
+        except ValueError:
+            print("invalid rotation")
+            input()
+            continue

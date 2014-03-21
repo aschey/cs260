@@ -1,5 +1,8 @@
 import sys
 import random
+if len(sys.argv) == 1:
+    print("usage: python3 makeintegers.py count start step swaps")
+    exit()
 def main():
     #gets the command-line arguments
     count = int(sys.argv[1])
