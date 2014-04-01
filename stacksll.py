@@ -1,5 +1,4 @@
 from singlylinkedlist import SinglyLinkedList
-import stackmain
 
 class StackSLL(object):
     def __init__(self):

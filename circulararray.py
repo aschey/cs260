@@ -10,7 +10,6 @@
 # 01/12/2014
 #################################################
 
-import testtemplate as t
 
 class CircularArray(object):
     def __init__(self, capacity):

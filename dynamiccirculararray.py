@@ -9,7 +9,6 @@
 ################################################
 
 from circulararray import CircularArray
-import testtemplate as t
 import time
 
 class DynamicCircularArray(CircularArray):
