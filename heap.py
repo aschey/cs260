@@ -1,104 +1,106 @@
-from binarytree import BinaryTree
-from binarynode import BinaryNode
-from queuesll import QueueSLL
-from stacksll import StackSLL
-class HeapBT(object):
-	def __init__(self):
-		self.store = BinaryTree()
-
-	def readTreeData(self, data):
-		for v in data:
-			self.store.add(v)
-
-	def heapify(self, current):
-		swapNode = self._getMin(current)
-		if swapNode != None:
-			self.swapValues(swapNode, current)
-			if swapNode.getLeft() != None or swapNode.getRight() != None:
-				self.heapify(swapNode)
-
-	def swapValues(self, node1, node2):
+from fillablearray import FillableArray
+class Heap(object):
+	def __init__(self, capacity):
+		self.store = FillableArray(capacity)
+	
+	def readArrayData(self, array):
 		"""
-		swaps the values of node1 and node2
+		reads values from an array and inputs them into a fillable array
 		"""
-		val1 = node1.getValue()
-		val2 = node2.getValue()
-		print(val1, val2)
-		node1.setValue(val2)
-		node2.setValue(val1)
+		for v in array:
+			self.store.addToBack(v)
 
+	def getParentIndex(self, nodeIndex):
+		"""
+		returns the parent of the node
+		"""
+		# node is the root if its index is 0
+		if nodeIndex > 0:
+			return nodeIndex // 2
 
-	def _getMin(self, node):
+	def getLeftChildIndex(self, nodeIndex):
 		"""
-		returns the min child of the node
+		returns the left child of the node
 		"""
-		left = node.getLeft()
-		right = node.getRight()
-		if (left != None and left.getValue() < node.getValue()) or (right != None and right.getValue() < node.getValue()):
-			if right == None:
-				return left
-			elif left == None or right.getValue() < left.getValue():
-				return right
+		leftChildIndex = nodeIndex * 2 + 1
+		if leftChildIndex < self.store.getSize():
+			return leftChildIndex
+
+	def getRightChildIndex(self, nodeIndex):
+		"""
+		returns the right child of the node
+		"""
+		rightChildIndex = nodeIndex * 2 + 2
+		if rightChildIndex < self.store.getSize():
+			return rightChildIndex
+
+	def getMinChildIndex(self, parentIndex):
+		"""
+		returns the smallest child of the parent node, None if there is none
+		"""
+		leftIndex = self.getLeftChildIndex(parentIndex)
+		rightIndex = self.getRightChildIndex(parentIndex)
+		if leftIndex != None and self.store.get(leftIndex) < self.store.get(parentIndex) or \
+				rightIndex != None and self.store.get(rightIndex) < self.store.get(parentIndex):
+			if rightIndex != None:
+				return leftIndex
+			elif leftIndex != None or self.store.get(rightIndex) < self.store.get(leftIndex):
+				return rightIndex
 			else:
-				return left
+				return leftIndex
+
+	def swapValues(self, index1, index2):
+		"""
+		swaps the values at index 1 and 2
+		"""
+		temp = self.store.get(index1)
+		self.store.setAtIndex(index1, self.store.get(index2))
+		self.store.setAtIndex(index2, temp)
+
+	def prune(self, pruneIndex):
+		"""
+		removes the node from the array
+		PRECONDITION: the node is a leaf
+		"""
+		self.store.removeFromIndex(pruneIndex)
+
+	def heapify(self, currentIndex):
+		"""
+		makes the parent node and its children have the heap property
+		"""
+		swapIndex = self.getMinChildIndex(currentIndex)
+		if swapIndex != None:
+			self.swapValues(swapIndex, currentIndex)
+			if self.getLeftChildIndex(swapIndex) != None or self.getRightChildIndex(swapIndex) != None:
+				self.heapify(currentIndex)
 
 	def buildHeap(self):
-		stack = self.levelOrderTraverse()
+		"""
+		makes the entire array into a heap
+		"""
+		currentIndex = self.store.getSize() - 1
 		while True:
-			current = stack.pop()
-			if current.getParent() == None:
+			if currentIndex == 0:
 				break
-			#print(current.getParent().getValue())
-			self.heapify(current.getParent())
-			stack.pop()
-
-	def levelOrderTraverse(self):
-		"""
-		performs a level-order traverse and returns a stack of the nodes
-		"""
-		queue = QueueSLL()
-		stack = StackSLL()
-		queue.enqueue(self.store.root)
-		while not queue.isEmpty():
-			current = queue.dequeue()
-			stack.push(current)
-			if current.getLeft() != None:
-				queue.enqueue(current.getLeft())
-			if current.getRight() != None:
-				queue.enqueue(current.getRight())
-		return stack
-
-	def getParent(self):
-		pass
-
-	def getLeftChild(self):
-		pass
-
-	def getRightChild(self):
-		pass
+			self.heapify(self.getParentIndex(currentIndex))
+			currentIndex -= 1
 
 	def extractMin(self):
-		pass
-
-	def bubbleUp(self):
-		pass
-
-	def insert(self, value):
-		pass
-
-	def peak(self):
-		pass
-
-	def isEmpty(self):
-		pass
+		"""
+		returns the root node and restores the heap property on the rest of the tree
+		"""
+		rootIndex = 0
+		pruneIndex = self.store.getSize()-1
+		self.store.setAtIndex(rootIndex, self.store.get(pruneIndex))
+		self.prune(pruneIndex)
+		self.heapify(rootIndex)
 
 def main():
-	heap = HeapBT()
-	heap.readTreeData([1,3,6,3,8,6,4,2,4])
-	#print(heap.store.root.value)
+	heap = Heap(10)
+	heap.readArrayData([4,2,6,1,4,3,7,8,5])
 	heap.buildHeap()
-	#print(heap.store.root.left.left.right.value)
-	print(heap.store.root.right.right.value)
+	for i in range(heap.store.size):
+		print(heap.store.get(i))
 
 if __name__ == '__main__':
 	main()
