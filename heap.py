@@ -16,7 +16,7 @@ class Heap(object):
 		"""
 		# node is the root if its index is 0
 		if nodeIndex > 0:
-			return nodeIndex // 2
+			return (nodeIndex - 1) // 2
 
 	def getLeftChildIndex(self, nodeIndex):
 		"""
@@ -42,9 +42,9 @@ class Heap(object):
 		rightIndex = self.getRightChildIndex(parentIndex)
 		if leftIndex != None and self.store.get(leftIndex) < self.store.get(parentIndex) or \
 				rightIndex != None and self.store.get(rightIndex) < self.store.get(parentIndex):
-			if rightIndex != None:
+			if rightIndex == None:
 				return leftIndex
-			elif leftIndex != None or self.store.get(rightIndex) < self.store.get(leftIndex):
+			elif self.store.get(rightIndex) < self.store.get(leftIndex):
 				return rightIndex
 			else:
 				return leftIndex
@@ -72,35 +72,40 @@ class Heap(object):
 		if swapIndex != None:
 			self.swapValues(swapIndex, currentIndex)
 			if self.getLeftChildIndex(swapIndex) != None or self.getRightChildIndex(swapIndex) != None:
-				self.heapify(currentIndex)
+				self.heapify(swapIndex)
 
 	def buildHeap(self):
 		"""
 		makes the entire array into a heap
 		"""
 		currentIndex = self.store.getSize() - 1
-		while True:
-			if currentIndex == 0:
-				break
+		while currentIndex > 0:
 			self.heapify(self.getParentIndex(currentIndex))
-			currentIndex -= 1
+			currentIndex -= 2
 
 	def extractMin(self):
 		"""
 		returns the root node and restores the heap property on the rest of the tree
 		"""
 		rootIndex = 0
+		rootValue = self.store.get(rootIndex)
 		pruneIndex = self.store.getSize()-1
+		#print(self.store.get(pruneIndex))
 		self.store.setAtIndex(rootIndex, self.store.get(pruneIndex))
 		self.prune(pruneIndex)
 		self.heapify(rootIndex)
+		return rootValue
 
 def main():
 	heap = Heap(10)
-	heap.readArrayData([4,2,6,1,4,3,7,8,5])
-	heap.buildHeap()
+	#heap.readArrayData([4,2,6,1,4,3,7,8,5,6])
+	heap.readArrayData([1,2,3,4,4,6,7,8,5,6])
+	#heap.readArrayData([6,4,3,2,4,6,7,8,5])
+	#heap.buildHeap()
+	#for i in range(heap.store.size):
+	#	print(heap.store.get(i))
 	for i in range(heap.store.size):
-		print(heap.store.get(i))
+		print(heap.extractMin())
 
 if __name__ == '__main__':
 	main()

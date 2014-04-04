@@ -66,7 +66,6 @@ class BinaryTree(object):
 			else:
 				current = current.getRight()
 				position -= positionCheck
-
 		return current
 
 
