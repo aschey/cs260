@@ -124,12 +124,6 @@ class BinaryTree(object):
 		if child != None:
 			child.setParent(parent)
 
-	def setChild(self, parent, child):
-		"""
-		sets 
-		"""
-		pass
-
 	def getRoot(self):
 		"""
 		returns the root of the tree

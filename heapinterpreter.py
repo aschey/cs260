@@ -1,22 +1,23 @@
-from binarysearchtree import BinarySearchTree
+from heap import Heap
+from heapbt import HeapBT
 from binarynode import BinaryNode
 from scanner import Scanner
 import subprocess
 from queuesll import QueueSLL
-class GraphWriter(object):
-    def __init__(self, filename, bst):
+class TreeGraphWriter(object):
+    def __init__(self, filename, heap):
         self.nodeNum = 1
         self.nullNum = 0
         self.filename = filename
         self.graph = open(filename + ".dot", "w")
         self.queue = QueueSLL()
-        self.bst = bst
+        self.heap = heap
 
     def createGraph(self):
         self.graph.write("digraph {\n")
         self.graph.write("graph [ordering=\"out\"];\n")
-        self.queue.enqueue(self.bst.getRoot())
-        self.graph.write("Node0 [label=" + str(self.bst.getRoot().getValue()) + "];\n")
+        self.queue.enqueue(self.heap.peek())
+        self.graph.write("Node0 [label=" + str(self.heap.peek().getValue()) + "];\n")
         localRootNode = 0
         while not self.queue.isEmpty():
             current = self.queue.dequeue()
@@ -46,7 +47,35 @@ class GraphWriter(object):
                 self.filename + ".eps", shell=True)
         subprocess.call("evince " + self.filename + ".eps", shell=True)
 
-bst = BinarySearchTree()
+class ArrayGraphWriter(TreeGraphWriter):
+    def createGraph(self):
+        self.graph.write("digraph {\n")
+        self.graph.write("graph [ordering=\"out\"];\n")
+        self.queue.enqueue(0)
+        self.graph.write("Node0 [label=" + str(self.heap.peek()) + "];\n")
+        localRootNode = 0
+        while not self.queue.isEmpty():
+            currentIndex = self.queue.dequeue()
+            curNode = "Node" + str(localRootNode)
+            self.writeToGraph(curNode, self.heap.getLeftIndex(currentIndex)current.getLeft())
+            self.writeToGraph(curNode, current.getRight())
+            localRootNode += 1
+        self.graph.write("}")
+        self.graph.close()
+
+    def writeToGraph(self, curNode, directionIndex):
+        if directionIndex != None:
+            nextNode = "Node" + str(self.nodeNum)
+            self.nodeNum += 1
+            self.graph.write(nextNode + " [label=" + str(self.heap.get(directionIndex)) + 
+                    "];\n")
+            self.graph.write(curNode + " -> " + nextNode + ";\n")
+            self.queue.enqueue(directionIndex)
+        else:
+            null = "Null" + str(self.nullNum)
+            self.nullNum += 1
+            self.graph.write(null + " [shape=point]\n;")
+            self.graph.write(curNode + " -> " + null + ";\n")
 
 while True:
     print("Menu")
@@ -62,14 +91,21 @@ while True:
     command = input("input a command: ")
     if command == "":
         continue
+
     option = command[0]
-    value = command[2:]
     
     if option == "e":
         exit()
 
+    elif option == "t":
+        heap = HeapBT()
+
+    elif option == "a":
+        heap = Heap()
+
     elif option == "f":
-        filename = value
+        filename = command[2:]
+        values = []
         try:
             scan = Scanner(filename)
         except IOError:
@@ -80,8 +116,9 @@ while True:
             nextInt = scan.readint()
             if nextInt == "":
                 break
-            bst.insert(nextInt)
+            values.append(nextInt)
         scan.close()
+
 
     elif option == "v":
         if bst.getRoot() == None:

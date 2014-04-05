@@ -1,7 +1,7 @@
-from fillablearray import FillableArray
+from dynamicarray import DynamicArray
 class Heap(object):
 	def __init__(self, capacity):
-		self.store = FillableArray(capacity)
+		self.store = DynamicArray(capacity)
 	
 	def readArrayData(self, array):
 		"""
@@ -9,6 +9,12 @@ class Heap(object):
 		"""
 		for v in array:
 			self.store.addToBack(v)
+
+	def get(self, currentIndex):
+		"""
+		returns the value at the index
+		"""
+		return self.store.get(currentIndex)
 
 	def getParentIndex(self, nodeIndex):
 		"""
@@ -90,11 +96,41 @@ class Heap(object):
 		rootIndex = 0
 		rootValue = self.store.get(rootIndex)
 		pruneIndex = self.store.getSize()-1
-		#print(self.store.get(pruneIndex))
 		self.store.setAtIndex(rootIndex, self.store.get(pruneIndex))
 		self.prune(pruneIndex)
 		self.heapify(rootIndex)
 		return rootValue
+
+	def bubbleUp(self, currentIndex):
+		"""
+		moves the node up the tree until it is greater than the parent
+		"""
+		while True:
+			parentIndex = self.getParentIndex(currentIndex)
+			if self.store.get(currentIndex) < self.store.get(parentIndex):
+				self.swapValues(currentIndex, parentIndex)
+				currentIndex = parentIndex
+			else:
+				break
+
+	def insert(self, value):
+		"""
+		inserts the node into the correct place in the heap
+		"""
+		self.store.addToBack(value)
+		self.bubbleUp(self.store.getSize()-1)
+
+	def peek(self):
+		"""
+		returns the value at the root of the heap
+		"""
+		return self.store.get(0)
+
+	def isEmpty(self):
+		"""
+		returns true if the heap is isEmpty
+		"""
+		return self.store.getSize() == 0
 
 def main():
 	heap = Heap(10)

@@ -36,6 +36,25 @@ class HeapBT(object):
 		self.heapify(root)
 		return pruneNode.getValue()
 
+	def bubbleUp(self, current):
+		"""
+		moves the node up the tree until it is greater than the parent
+		"""
+		while True:
+			parent = self.store.getParent(current)
+			if current.getValue() < parent.getValue():
+				self.store.swapValues(parent, current)
+				current = parent
+			else:
+				break
+
+	def insert(self, value):
+		"""
+		inserts the value into the correct location in the tree
+		"""
+		self.store.add(value)
+		self.bubbleUp(self.store.getLastNode())
+
 	def peek(self):
 		return self.store.getRoot()
 
