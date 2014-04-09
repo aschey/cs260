@@ -6,7 +6,7 @@ class HeapBT(object):
 	def __init__(self):
 		self.store = BinaryTree()
 
-	def readTreeData(self, data):
+	def readData(self, data):
 		for v in data:
 			self.store.add(v)
 
@@ -54,6 +54,12 @@ class HeapBT(object):
 		"""
 		self.store.add(value)
 		self.bubbleUp(self.store.getLastNode())
+
+	def sort(self):
+		"""
+		performs a heapsort
+		"""
+		pass
 
 	def peek(self):
 		return self.store.getRoot()

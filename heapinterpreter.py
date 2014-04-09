@@ -101,7 +101,7 @@ while True:
         heap = HeapBT()
 
     elif option == "a":
-        heap = Heap()
+        heap = Heap(size)
 
     elif option == "f":
         filename = command[2:]
@@ -118,16 +118,23 @@ while True:
                 break
             values.append(nextInt)
         scan.close()
+        heap.readData(values)
 
 
     elif option == "v":
-        if bst.getRoot() == None:
+        if heap.peek() == None:
             print("Error: the tree is empty")
             input()
         else:
-            gw = GraphWriter("graph", bst)
+            if type(heap) == HeapBT:
+                gw = TreeGraphWriter("graph", heap)
+            else:
+                gw = ArrayGraphWriter("graph", heap)
             gw.createGraph()
             gw.display()
+
+    elif option == "s":
+        
 
     elif option == "t":
         isCorrect = bst.isCorrect()
