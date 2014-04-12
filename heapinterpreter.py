@@ -32,14 +32,13 @@ class TreeGraphWriter(object):
         if directionNode != None:
             nextNode = "Node" + str(self.nodeNum)
             self.nodeNum += 1
-            self.graph.write(nextNode + " [label=" + str(directionNode.getValue()) + 
-                    "];\n")
+            self.graph.write(nextNode + " [label=" + str(directionNode.getValue()) + "];\n")
             self.graph.write(curNode + " -> " + nextNode + ";\n")
             self.queue.enqueue(directionNode)
         else:
             null = "Null" + str(self.nullNum)
             self.nullNum += 1
-            self.graph.write(null + " [shape=point]\n;")
+            self.graph.write(null + " [shape=point];\n")
             self.graph.write(curNode + " -> " + null + ";\n")
 
     def display(self):
@@ -57,8 +56,8 @@ class ArrayGraphWriter(TreeGraphWriter):
         while not self.queue.isEmpty():
             currentIndex = self.queue.dequeue()
             curNode = "Node" + str(localRootNode)
-            self.writeToGraph(curNode, self.heap.getLeftIndex(currentIndex)current.getLeft())
-            self.writeToGraph(curNode, current.getRight())
+            self.writeToGraph(curNode, self.heap.getLeftIndex(currentIndex))
+            self.writeToGraph(curNode, self.heap.getRightIndex(currentIndex))
             localRootNode += 1
         self.graph.write("}")
         self.graph.close()
@@ -74,15 +73,17 @@ class ArrayGraphWriter(TreeGraphWriter):
         else:
             null = "Null" + str(self.nullNum)
             self.nullNum += 1
-            self.graph.write(null + " [shape=point]\n;")
+            self.graph.write(null + " [shape=point];\n")
             self.graph.write(curNode + " -> " + null + ";\n")
 
 while True:
     print("Menu")
     print("----")
     print("f XXX: load data from file XXX into tree")
-    print("a: choose array-based implementation")
-    print("t: choose tree-based implementation")
+    print("a XXX: choose array-based implementation with size XXX")
+    print("i XXX: insert value XXX into the tree")
+    print("b: choose binary tree-based implementation")
+    print("h: build the heap")
     print("s: sort data in ascending order")
     print("v: visualize with graphviz")
     print("t: test for correctness")
@@ -93,6 +94,7 @@ while True:
         continue
 
     option = command[0]
+    print(option)
     
     if option == "e":
         exit()
@@ -101,7 +103,15 @@ while True:
         heap = HeapBT()
 
     elif option == "a":
+        size = int(command[2:])
         heap = Heap(size)
+
+    elif option == "b":
+        heap.buildHeap()
+
+    elif option == "i":
+        value = int(command[2:])
+        heap.insert(value)
 
     elif option == "f":
         filename = command[2:]
@@ -120,7 +130,6 @@ while True:
         scan.close()
         heap.readData(values)
 
-
     elif option == "v":
         if heap.peek() == None:
             print("Error: the tree is empty")
@@ -134,48 +143,59 @@ while True:
             gw.display()
 
     elif option == "s":
-        
-
-    elif option == "t":
-        isCorrect = bst.isCorrect()
-        if isCorrect:
-            print("The tree is correct")
+        if type(heap) == HeapBT:
+            queue = heap.sort()
+            while not queue.isEmpty():
+                print(queue.dequeue())
         else:
-            print("The tree is incorrect")
-            print("Incorrect node:", bst.incorrectNode.getValue())
-        input()
+            heap.sort()
+            for i in range(heap.getSize()):
+                print(heap.get(i))
+
+
+
+
+
+    # elif option == "t":
+    #     isCorrect = bst.isCorrect()
+    #     if isCorrect:
+    #         print("The tree is correct")
+    #     else:
+    #         print("The tree is incorrect")
+    #         print("Incorrect node:", bst.incorrectNode.getValue())
+    #     input()
     
-    elif option == "s":
-        oldVal = int(value.split()[0])
-        newVal = int(value.split()[1])
-        node = bst.find(oldVal)
-        node.setValue(newVal)
+    # elif option == "s":
+    #     oldVal = int(value.split()[0])
+    #     newVal = int(value.split()[1])
+    #     node = bst.find(oldVal)
+    #     node.setValue(newVal)
 
-    if option in "fvts":
-        continue
+    # if option in "fvts":
+    #     continue
 
-    if option not in "inldr":
-        print("invalid option")
-        input()
-        continue
+    # if option not in "inldr":
+    #     print("invalid option")
+    #     input()
+    #     continue
 
-    value = int(value)
+    # value = int(value)
 
-    if option == "i":
-        bst.insert(value)
+    # if option == "i":
+    #     bst.insert(value)
 
-    elif option == "l":
-        foundVal = bst.find(value)
-        print(foundVal != None)
-        input()
+    # elif option == "l":
+    #     foundVal = bst.find(value)
+    #     print(foundVal != None)
+    #     input()
 
-    elif option == "d":
-        bst.delete(bst.find(value))
+    # elif option == "d":
+    #     bst.delete(bst.find(value))
 
-    elif option == "r":
-        try:
-            bst.rotate(bst.find(value))
-        except ValueError:
-            print("invalid rotation")
-            input()
-            continue
+    # elif option == "r":
+    #     try:
+    #         bst.rotate(bst.find(value))
+    #     except ValueError:
+    #         print("invalid rotation")
+    #         input()
+    #         continue

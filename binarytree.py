@@ -5,17 +5,17 @@ from queuesll import QueueSLL
 class BinaryTree(object):
 	def __init__(self):
 		self.root = None
-		self.size = 0
+		self.store = StackSLL()
 
 	def add(self, value):
 		"""
 		adds the value to the bottom of the tree
 		"""
 		node = BinaryNode(value)
+		self.store.push(node)
 		if self.root == None:
 			self.root = node
 		else:
-			self.size += 1
 			queue = QueueSLL()
 			queue.enqueue(self.root)
 			while not queue.isEmpty():
@@ -51,22 +51,23 @@ class BinaryTree(object):
 		"""
 		returns the last node in the tree
 		"""
-		nodesInLevel = 2
-		remainingNodes = self.size
-		while remainingNodes > 0:
-			remainingNodes -= nodesInLevel
-			nodesInLevel *= 2
-		position = remainingNodes + nodesInLevel // 2
-		current = self.root
-		positionCheck = nodesInLevel // 2
-		while positionCheck > 1:
-			positionCheck //= 2
-			if position <= positionCheck:
-				current = current.getLeft()
-			else:
-				current = current.getRight()
-				position -= positionCheck
-		return current
+		# nodesInLevel = 2
+		# remainingNodes = self.size
+		# while remainingNodes > 0:
+		# 	remainingNodes -= nodesInLevel
+		# 	nodesInLevel *= 2
+		# position = remainingNodes + nodesInLevel // 2
+		# current = self.root
+		# positionCheck = nodesInLevel // 2
+		# while positionCheck > 1:
+		# 	positionCheck //= 2
+		# 	if position <= positionCheck:
+		# 		current = current.getLeft()
+		# 	else:
+		# 		current = current.getRight()
+		# 		position -= positionCheck
+		# return current
+		return self.store.peek()
 
 
 	def swapValues(self, node1, node2):
@@ -78,20 +79,26 @@ class BinaryTree(object):
 		node1.setValue(val2)
 		node2.setValue(val1)
 
-	def getMinChild(self, node):
+	def getMinChild(self, parent):
 		"""
 		returns the min child of the node, None if the parent is the min
 		"""
-		left = node.getLeft()
-		right = node.getRight()
-		if left != None and left.getValue() < node.getValue() or \
-				right != None and right.getValue() < node.getValue():
+		left = parent.getLeft()
+		right = parent.getRight()
+		if self._lessThan(left, parent) or self._lessThan(right, parent):
 			if right == None:
 				return left
-			elif right.getValue() < left.getValue():
+			elif right < left:
 				return right
 			else:
 				return left
+
+	def _lessThan(self, node1, node2):
+		"""
+		returns True if node1 is less than node2
+		PRECONDITION: node2 can NOT be a child of node1
+		"""
+		return node1 != None and node1 < node2
 
 	def prune(self, node):
 		"""
@@ -106,7 +113,7 @@ class BinaryTree(object):
 		else:
 			self.root = None
 		node.setParent(None)
-		self.size -= 1
+		self.store.pop()
 
 	def setLeftChild(self, parent, child):
 		"""
@@ -131,25 +138,24 @@ class BinaryTree(object):
 		return self.root
 
 def main():
-	bt = BinaryTree()
-	bt.add(3)
-	bt.add(4)
-	bt.add(5)
-	bt.add(1)
-	bt.add(10)
-	bt.add(11)
-	bt.add(3)
-	bt.add(4)
-	bt.add(24)
-	bt.add(34)
-	bt.add(100)
-	bt.add(1000)
-	bt.add(1)
-	bt.add(2)
-	bt.add(3)
-	bt.add(4)
-	bt.add(5)
-
+	# bt = BinaryTree()
+	# bt.add(3)
+	# bt.add(4)
+	# bt.add(5)
+	# bt.add(1)
+	# bt.add(10)
+	# bt.add(11)
+	# bt.add(3)
+	# bt.add(4)
+	# bt.add(24)
+	# bt.add(34)
+	# bt.add(100)
+	# bt.add(1000)
+	# bt.add(1)
+	# bt.add(2)
+	# bt.add(3)
+	# bt.add(4)
+	# bt.add(5)
 	print(bt.getLastNode().getValue())
 
 if __name__ == '__main__':

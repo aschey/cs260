@@ -253,8 +253,8 @@ class DynamicArray(FillableArray):
         
 def main1():
     import random
-    dArray = DynamicArray(3000)
-    for i in range(3000): 
+    dArray = DynamicArray(30)
+    for i in range(30): 
         dArray.addToFront(i)
     dArray.stoogeSort()
 

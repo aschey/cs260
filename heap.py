@@ -1,4 +1,5 @@
 from dynamicarray import DynamicArray
+from queuesll import QueueSLL
 class Heap(object):
 	def __init__(self, capacity):
 		self.store = DynamicArray(capacity)
@@ -49,14 +50,21 @@ class Heap(object):
 		"""
 		leftIndex = self.getLeftIndex(parentIndex)
 		rightIndex = self.getRightIndex(parentIndex)
-		if leftIndex != None and self.store.get(leftIndex) > self.store.get(parentIndex) or \
-				rightIndex != None and self.store.get(rightIndex) > self.store.get(parentIndex):
+		if self._greaterThan(leftIndex, parentIndex) or self._greaterThan(rightIndex, parentIndex):
 			if rightIndex == None:
 				return leftIndex
-			elif self.store.get(rightIndex) > self.store.get(leftIndex):
+			elif self._greaterThan(rightIndex, leftIndex):
 				return rightIndex
 			else:
 				return leftIndex
+
+	def _greaterThan(self, index1, index2):
+		"""
+		returns True if the value at index1 is greater than the value at index2
+		The None checking for index1 is used for cases where index2 is the parent of index1
+		PRECONDITION: index2 should NOT be the child of index1
+		"""
+		return index1 != None and self.store.get(index1) > self.store.get(index2)
 
 	def swapValues(self, index1, index2):
 		"""
@@ -116,11 +124,29 @@ class Heap(object):
 		"""
 		while True:
 			parentIndex = self.getParentIndex(currentIndex)
-			if parentIndex != None and self.store.get(currentIndex) > self.store.get(parentIndex):
+			if parentIndex != None and self._greaterThan(currentIndex, parentIndex):
 				self.swapValues(currentIndex, parentIndex)
 				currentIndex = parentIndex
 			else:
 				break
+
+	def isCorrect(self):
+		"""
+		tests the tree for correctness
+		"""
+		queue = QueueSLL()
+		queue.enqueue(self.ROOT_INDEX)
+		while not queue.isEmpty(): 
+			current = queue.dequeue()
+			if self.getMaxIndex(current) != None:
+				return False
+			lIndex = self.getLeftIndex(current)
+			if lIndex != None:
+				queue.enqueue(lIndex)
+			rIndex = self.getRightIndex(current)
+			if rIndex != None:
+				queue.enqueue(rIndex)
+		return True
 
 	def insert(self, value):
 		"""
@@ -137,6 +163,12 @@ class Heap(object):
 		if not self.store.isEmpty():
 			return self.store.get(0)
 
+	def getSize(self):
+		"""
+		returns the number of elements in the heap
+		"""
+		return self.store.getSize()
+
 	def isEmpty(self):
 		"""
 		returns true if the heap is isEmpty
@@ -149,14 +181,16 @@ def main():
 	heap.buildHeap()
 	heap.insert(5)
 	heap.insert(10)
+	heap.insert(-1)
+	print(heap.isCorrect())
 	#heap.extractMax()
 	#heap.store = DynamicArray(10)
 	#for i in [7,6,6,5,4,1,3,4,2,8]:
 	#	heap.store.addToBack(i)
 	#heap.size = 9
-	heap.sort()
-	for i in range(heap.store.size):
-	   print(heap.store.get(i))
+	#heap.sort()
+	#for i in range(heap.store.size):
+	#   print(heap.store.get(i))
 	# heap.sort()
 	# for i in range(heap.store.size):
 	# 	print(heap.store.get(i))

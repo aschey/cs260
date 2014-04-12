@@ -41,3 +41,9 @@ class BinaryNode(object):
 
     def hasChildren(self):
         return self.left != None or self.right != None
+
+    def __lt__(self, other):
+        return self.value < other.value
+
+    def __gt__(self, other):   
+        return self.value > other.value
