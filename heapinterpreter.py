@@ -94,12 +94,11 @@ while True:
         continue
 
     option = command[0]
-    print(option)
     
     if option == "e":
         exit()
 
-    elif option == "t":
+    elif option == "b":
         heap = HeapBT()
 
     elif option == "a":
@@ -152,7 +151,9 @@ while True:
             for i in range(heap.getSize()):
                 print(heap.get(i))
 
-
+    elif option == "t":
+        print(heap.isCorrect())
+        input()
 
 
 
