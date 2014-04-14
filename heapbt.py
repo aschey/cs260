@@ -5,12 +5,27 @@ from stacksll import StackSLL
 class HeapBT(object):
 	def __init__(self):
 		self.store = BinaryTree()
+		self.stack = StackSLL()
 
 	def readData(self, data):
-		for v in data:
-			self.store.add(v)
+		"""
+		reads data from a queue and inserts it into the heap
+		"""
+		while not data.isEmpty():
+			self.addNode(data.dequeue())
+
+	def addNode(self, value):
+		"""
+		adds the node to the heap
+		"""
+		node = BinaryNode(value)
+		self.store.add(node)
+		self.stack.push(node)
 
 	def heapify(self, current):
+		"""
+		makes the parent node and its children have the heap property
+		"""
 		swapNode = self.store.getMinChild(current)
 		if swapNode != None:
 			self.store.swapValues(swapNode, current)
@@ -18,10 +33,14 @@ class HeapBT(object):
 				self.heapify(swapNode)
 
 	def buildHeap(self):
-		stack = self.store.levelOrderTraverse()
+		"""
+		makes the entire tree into a heap
+		"""
+		if self.stack.isEmpty():
+			raise ValueError("The tree is empty or the heap has already been built")
 		i = 0
 		while True:
-			current = stack.pop()
+			current = self.stack.pop()
 			if current.getParent() == None:
 				break
 			if i % 2 == 0:
@@ -29,7 +48,9 @@ class HeapBT(object):
 			i += 1
 
 	def extractMin(self):
-		# PRIORITY QUEUES
+		"""
+		returns the root node and restores the heap property on the rest of the tree
+		"""
 		root = self.store.getRoot()
 		if root == None:
 			return
@@ -55,7 +76,7 @@ class HeapBT(object):
 		"""
 		inserts the value into the correct location in the tree
 		"""
-		self.store.add(value)
+		self.addNode(value)
 		self.bubbleUp(self.store.getLastNode())
 
 	def sort(self):
@@ -70,7 +91,7 @@ class HeapBT(object):
 			queue.enqueue(minVal)
 		return queue
 
-	def getIncorrectNode(self):
+	def isCorrect(self):
 		"""
 		returns True if the tree is a heap
 		"""
@@ -90,6 +111,9 @@ class HeapBT(object):
 		return True
 
 	def peek(self):
+		"""
+		returns the value at the root of the heap
+		"""
 		return self.store.getRoot()
 
 	def isEmpty(self):
@@ -101,9 +125,9 @@ class HeapBT(object):
 
 def main():
 	heap = HeapBT()
-	heap.readData([3,6,2,11,8,9])
+	heap.readData([3,6,2,11,8,9,10])
 	#print(heap.store.root.value)
-	#heap.buildHeap()
+	heap.buildHeap()
 	heap.insert(2)
 	#heap.insert(10)
 	#heap.insert(1)

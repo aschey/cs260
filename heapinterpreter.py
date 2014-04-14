@@ -77,6 +77,7 @@ class ArrayGraphWriter(TreeGraphWriter):
             self.graph.write(curNode + " -> " + null + ";\n")
 
 while True:
+    print()
     print("Menu")
     print("----")
     print("f XXX: load data from file XXX into tree")
@@ -88,6 +89,7 @@ while True:
     print("v: visualize with graphviz")
     print("t: test for correctness")
     print("e: exit")
+    print()
 
     command = input("input a command: ")
     if command == "":
@@ -105,7 +107,7 @@ while True:
         size = int(command[2:])
         heap = Heap(size)
 
-    elif option == "b":
+    elif option == "h":
         heap.buildHeap()
 
     elif option == "i":
@@ -114,7 +116,7 @@ while True:
 
     elif option == "f":
         filename = command[2:]
-        values = []
+        values = QueueSLL()
         try:
             scan = Scanner(filename)
         except IOError:
@@ -125,7 +127,7 @@ while True:
             nextInt = scan.readint()
             if nextInt == "":
                 break
-            values.append(nextInt)
+            values.enqueue(nextInt)
         scan.close()
         heap.readData(values)
 
@@ -155,48 +157,6 @@ while True:
         print(heap.isCorrect())
         input()
 
-
-
-    # elif option == "t":
-    #     isCorrect = bst.isCorrect()
-    #     if isCorrect:
-    #         print("The tree is correct")
-    #     else:
-    #         print("The tree is incorrect")
-    #         print("Incorrect node:", bst.incorrectNode.getValue())
-    #     input()
-    
-    # elif option == "s":
-    #     oldVal = int(value.split()[0])
-    #     newVal = int(value.split()[1])
-    #     node = bst.find(oldVal)
-    #     node.setValue(newVal)
-
-    # if option in "fvts":
-    #     continue
-
-    # if option not in "inldr":
-    #     print("invalid option")
-    #     input()
-    #     continue
-
-    # value = int(value)
-
-    # if option == "i":
-    #     bst.insert(value)
-
-    # elif option == "l":
-    #     foundVal = bst.find(value)
-    #     print(foundVal != None)
-    #     input()
-
-    # elif option == "d":
-    #     bst.delete(bst.find(value))
-
-    # elif option == "r":
-    #     try:
-    #         bst.rotate(bst.find(value))
-    #     except ValueError:
-    #         print("invalid rotation")
-    #         input()
-    #         continue
+    else:
+        print("invalid option")
+        input()

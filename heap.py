@@ -6,13 +6,19 @@ class Heap(object):
 		self.ROOT_INDEX = 0
 		self.size = 0
 	
-	def readData(self, array):
+	def readData(self, data):
 		"""
-		reads values from an array and inputs them into a fillable array
+		reads values from a queue and inputs them into a fillable array
 		"""
-		for v in array:
-			self.store.addToBack(v)
-			self.size += 1
+		while not data.isEmpty():
+			self.addNode(data.dequeue())
+
+	def addNode(self, value):
+		"""
+		adds the node to the array
+		"""
+		self.store.addToBack(value)
+		self.size += 1
 
 	def get(self, currentIndex):
 		"""
@@ -24,8 +30,8 @@ class Heap(object):
 		"""
 		returns the parent of the node
 		"""
-		# node is the root if its index is 0
-		if nodeIndex > 0:
+		# node has no parent if it is the root
+		if nodeIndex > self.ROOT_INDEX:
 			return (nodeIndex - 1) // 2
 
 	def getLeftIndex(self, nodeIndex):
@@ -33,6 +39,7 @@ class Heap(object):
 		returns the left child of the node
 		"""
 		leftChildIndex = nodeIndex * 2 + 1
+		# don't return anything if the index is out of bounds
 		if leftChildIndex < self.size:
 			return leftChildIndex
 
@@ -44,12 +51,13 @@ class Heap(object):
 		if rightChildIndex < self.size:
 			return rightChildIndex
 
-	def getMaxIndex(self, parentIndex):
+	def getMaxChildIndex(self, parentIndex):
 		"""
 		returns the smallest child of the parent node, None if there is none
 		"""
 		leftIndex = self.getLeftIndex(parentIndex)
 		rightIndex = self.getRightIndex(parentIndex)
+		# if the left or the right child is greater than the parent
 		if self._greaterThan(leftIndex, parentIndex) or self._greaterThan(rightIndex, parentIndex):
 			if rightIndex == None:
 				return leftIndex
@@ -85,9 +93,11 @@ class Heap(object):
 		"""
 		makes the parent node and its children have the heap property
 		"""
-		swapIndex = self.getMaxIndex(currentIndex)
+		swapIndex = self.getMaxChildIndex(currentIndex)
 		if swapIndex != None:
+			# swap the current value and the value of the max child
 			self.swapValues(swapIndex, currentIndex)
+			# recursively heapify as long as the node has one or more children
 			if self.getLeftIndex(swapIndex) != None or self.getRightIndex(swapIndex) != None:
 				self.heapify(swapIndex)
 
@@ -95,9 +105,12 @@ class Heap(object):
 		"""
 		makes the entire array into a heap
 		"""
+		# start at the last node
 		currentIndex = self.store.getSize() - 1
 		while currentIndex > 0:
+			# run heapify on every node except the leaves
 			self.heapify(self.getParentIndex(currentIndex))
+			# decrement by 2 in order to check each parent once instead of twice
 			currentIndex -= 2
 
 	def extractMax(self):
@@ -105,8 +118,11 @@ class Heap(object):
 		returns the root node and restores the heap property on the rest of the tree
 		"""
 		rootValue = self.store.get(self.ROOT_INDEX)
+		# decrement the size so already sorted nodes are ignored
 		self.size -= 1
+		# swap the first and last values
 		self.swapValues(self.ROOT_INDEX, self.size)
+		# make the new root value go to its proper place
 		self.heapify(self.ROOT_INDEX)
 
 	def sort(self):
@@ -124,6 +140,7 @@ class Heap(object):
 		"""
 		while True:
 			parentIndex = self.getParentIndex(currentIndex)
+			# if the current value is greater than the parent value, bubble the current value up
 			if parentIndex != None and self._greaterThan(currentIndex, parentIndex):
 				self.swapValues(currentIndex, parentIndex)
 				currentIndex = parentIndex
@@ -132,13 +149,14 @@ class Heap(object):
 
 	def isCorrect(self):
 		"""
-		tests the tree for correctness
+		tests the tree for correctness using a level-order traverse
 		"""
 		queue = QueueSLL()
 		queue.enqueue(self.ROOT_INDEX)
 		while not queue.isEmpty(): 
 			current = queue.dequeue()
-			if self.getMaxIndex(current) != None:
+			# if a node has a child greater than it, the tree is not a heap
+			if self.getMaxChildIndex(current) != None:
 				return False
 			lIndex = self.getLeftIndex(current)
 			if lIndex != None:
@@ -152,8 +170,7 @@ class Heap(object):
 		"""
 		inserts the node into the correct place in the heap
 		"""
-		self.store.addToBack(value)
-		self.size += 1
+		self.addNode(value)
 		self.bubbleUp(self.size-1)
 
 	def peek(self):
@@ -161,7 +178,7 @@ class Heap(object):
 		returns the value at the root of the heap
 		"""
 		if not self.store.isEmpty():
-			return self.store.get(0)
+			return self.store.get(self.ROOT_INDEX)
 
 	def getSize(self):
 		"""
@@ -178,22 +195,11 @@ class Heap(object):
 def main():
 	heap = Heap(10)
 	heap.readData([3,4,1,6,8,2,3,8,5])
-	heap.buildHeap()
-	heap.insert(5)
 	heap.insert(10)
-	heap.insert(-1)
-	print(heap.isCorrect())
-	#heap.extractMax()
-	#heap.store = DynamicArray(10)
-	#for i in [7,6,6,5,4,1,3,4,2,8]:
-	#	heap.store.addToBack(i)
-	#heap.size = 9
-	#heap.sort()
-	#for i in range(heap.store.size):
-	#   print(heap.store.get(i))
-	# heap.sort()
-	# for i in range(heap.store.size):
-	# 	print(heap.store.get(i))
+	heap.insert(4)
+	heap.buildHeap()
+	for i in range(11):
+		print(heap.store.get(i))
 
 if __name__ == '__main__':
 	main()

@@ -7,11 +7,10 @@ class BinaryTree(object):
 		self.root = None
 		self.store = StackSLL()
 
-	def add(self, value):
+	def add(self, node):
 		"""
 		adds the value to the bottom of the tree
 		"""
-		node = BinaryNode(value)
 		self.store.push(node)
 		if self.root == None:
 			self.root = node
@@ -51,22 +50,6 @@ class BinaryTree(object):
 		"""
 		returns the last node in the tree
 		"""
-		# nodesInLevel = 2
-		# remainingNodes = self.size
-		# while remainingNodes > 0:
-		# 	remainingNodes -= nodesInLevel
-		# 	nodesInLevel *= 2
-		# position = remainingNodes + nodesInLevel // 2
-		# current = self.root
-		# positionCheck = nodesInLevel // 2
-		# while positionCheck > 1:
-		# 	positionCheck //= 2
-		# 	if position <= positionCheck:
-		# 		current = current.getLeft()
-		# 	else:
-		# 		current = current.getRight()
-		# 		position -= positionCheck
-		# return current
 		return self.store.peek()
 
 
