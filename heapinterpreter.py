@@ -82,7 +82,7 @@ while True:
     print("----")
     print("f XXX: load data from file XXX into tree")
     print("a XXX: choose array-based implementation with size XXX")
-    print("i XXX: insert value XXX into the tree")
+    print("i XXX: insert value XXX into the tree (array-based version only)")
     print("b: choose binary tree-based implementation")
     print("h: build the heap")
     print("s: sort data in ascending order")
@@ -111,8 +111,12 @@ while True:
         heap.buildHeap()
 
     elif option == "i":
-        value = int(command[2:])
-        heap.insert(value)
+        if type(heap) == HeapBT:
+            print("Cannot be done because the heap is tree-based")
+            input()
+        else:
+            value = int(command[2:])
+            heap.insert(value)
 
     elif option == "f":
         filename = command[2:]
@@ -127,7 +131,10 @@ while True:
             nextInt = scan.readint()
             if nextInt == "":
                 break
-            values.enqueue(nextInt)
+            if type(heap) == HeapBT:
+                values.enqueue(BinaryNode(nextInt))
+            else:
+                values.enqueue(nextInt)
         scan.close()
         heap.readData(values)
 

@@ -5,21 +5,30 @@ from stacksll import StackSLL
 class HeapBT(object):
 	def __init__(self):
 		self.store = BinaryTree()
+		# used to access each node in reverse order for the build heap operation
 		self.stack = StackSLL()
 
 	def readData(self, data):
 		"""
 		reads data from a queue and inserts it into the heap
 		"""
+		queue = QueueSLL()
+		parent = None
+		i = 1
 		while not data.isEmpty():
-			self.addNode(data.dequeue())
+			# the parent changes every other leaf
+			node = data.dequeue()
+			if i % 2 == 0:
+				parent = queue.dequeue()
+			queue.enqueue(node)
+			self._addNode(node, parent)
+			i += 1
 
-	def addNode(self, value):
+	def _addNode(self, node, parent):
 		"""
 		adds the node to the heap
 		"""
-		node = BinaryNode(value)
-		self.store.add(node)
+		self.store.add(node, parent)
 		self.stack.push(node)
 
 	def heapify(self, current):
@@ -28,7 +37,9 @@ class HeapBT(object):
 		"""
 		swapNode = self.store.getMinChild(current)
 		if swapNode != None:
+			# swap the min child with the parent
 			self.store.swapValues(swapNode, current)
+			# continue down the tree while current has at least one child
 			if swapNode.getLeft() != None or swapNode.getRight() != None:
 				self.heapify(swapNode)
 
@@ -41,43 +52,30 @@ class HeapBT(object):
 		i = 0
 		while True:
 			current = self.stack.pop()
+			# continue until the root is reached
 			if current.getParent() == None:
 				break
+			# heapify every other node's parent to prevent duplicate calls
 			if i % 2 == 0:
 				self.heapify(current.getParent())
 			i += 1
 
-	def extractMin(self):
+	def _extractMin(self):
 		"""
 		returns the root node and restores the heap property on the rest of the tree
 		"""
 		root = self.store.getRoot()
+		# if root is None, the tree is empty
 		if root == None:
 			return
 		pruneNode = self.store.getLastNode()
+		# remove the last node
 		self.store.prune(pruneNode)
+		# swap the first and last values
 		self.store.swapValues(root, pruneNode)
+		# put the new root value in its proper place
 		self.heapify(root)
 		return pruneNode.getValue()
-
-	def bubbleUp(self, current):
-		"""
-		moves the node up the tree until it is greater than the parent
-		"""
-		while True:
-			parent = current.getParent()
-			if parent != None and current < parent:
-				self.store.swapValues(parent, current)
-				current = parent
-			else:
-				break
-
-	def insert(self, value):
-		"""
-		inserts the value into the correct location in the tree
-		"""
-		self.addNode(value)
-		self.bubbleUp(self.store.getLastNode())
 
 	def sort(self):
 		"""
@@ -85,7 +83,7 @@ class HeapBT(object):
 		"""
 		queue = QueueSLL()
 		while True:
-			minVal = self.extractMin()
+			minVal = self._extractMin()
 			if minVal == None:
 				break
 			queue.enqueue(minVal)
@@ -100,6 +98,7 @@ class HeapBT(object):
 		while not queue.isEmpty():
 			current = queue.dequeue()
 			incorrectNode = self.store.getMinChild(current)
+			# if any node has a min child, the tree is not a heap
 			if self.store.getMinChild(current) != None:
 				return False
 			left = current.getLeft()
@@ -120,23 +119,30 @@ class HeapBT(object):
 		"""
 		returns true if the heap is empty
 		"""
-		# check root separately because size does not account for root
-		return self.store.getSize() == 0 and self.store.getRoot() == None 
+		return self.store.getRoot() == None 
 
 def main():
 	heap = HeapBT()
-	heap.readData([3,6,2,11,8,9,10])
-	#print(heap.store.root.value)
+	queue = QueueSLL()
+	for i in range(10):
+		queue.enqueue(BinaryNode(i))
+	heap.readData(queue)
 	heap.buildHeap()
-	heap.insert(2)
-	#heap.insert(10)
-	#heap.insert(1)
-	stack = heap.store.levelOrderTraverse()
-	while not stack.isEmpty():
-		print(stack.pop().getValue())
-	print(heap.isCorrect())
-	#while not queue.isEmpty():
-	#	print(queue.dequeue())
+	queue = heap.sort()
+	for i in range(10):
+		print(queue.dequeue())
+	#while not heap.store.store.isEmpty():
+	#	print(heap.store.store.dequeue().value)
+	# heap.buildHeap()
+	# heap.insert(2)
+	# #heap.insert(10)
+	# #heap.insert(1)
+	# stack = heap.store.levelOrderTraverse()
+	# while not stack.isEmpty():
+	# 	print(stack.pop().getValue())
+	# print(heap.isCorrect())
+	# #while not queue.isEmpty():
+	# #	print(queue.dequeue())
 	
 
 if __name__ == '__main__':

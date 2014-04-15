@@ -1,4 +1,3 @@
-from queuesll import QueueSLL
 from binarynode import BinaryNode 
 from stacksll import StackSLL
 from queuesll import QueueSLL
@@ -7,7 +6,7 @@ class BinaryTree(object):
 		self.root = None
 		self.store = StackSLL()
 
-	def add(self, node):
+	def add(self, node, parent):
 		"""
 		adds the value to the bottom of the tree
 		"""
@@ -15,43 +14,17 @@ class BinaryTree(object):
 		if self.root == None:
 			self.root = node
 		else:
-			queue = QueueSLL()
-			queue.enqueue(self.root)
-			while not queue.isEmpty():
-				current = queue.dequeue()
-				if current.getLeft() != None:
-					queue.enqueue(current.getLeft())
-				else:
-					self.setLeftChild(current, node)
-					break
-				if current.getRight() != None:
-					queue.enqueue(current.getRight())
-				else:
-					self.setRightChild(current, node)
-					break
-
-	def levelOrderTraverse(self):
-		"""
-		performs a level-order traverse and returns a stack of the nodes
-		"""
-		queue = QueueSLL()
-		stack = StackSLL()
-		queue.enqueue(self.root)
-		while not queue.isEmpty():
-			current = queue.dequeue()
-			stack.push(current)
-			if current.getLeft() != None:
-				queue.enqueue(current.getLeft())
-			if current.getRight() != None:
-				queue.enqueue(current.getRight())
-		return stack
+			if parent.getLeft() == None:
+				self.setLeftChild(parent, node)
+			else:
+				self.setRightChild(parent, node)
 
 	def getLastNode(self):
 		"""
 		returns the last node in the tree
 		"""
+		#return self.store.get(self.store.getSize()-1)
 		return self.store.peek()
-
 
 	def swapValues(self, node1, node2):
 		"""
@@ -68,6 +41,7 @@ class BinaryTree(object):
 		"""
 		left = parent.getLeft()
 		right = parent.getRight()
+		# if the node has at least one child less than it
 		if self._lessThan(left, parent) or self._lessThan(right, parent):
 			if right == None:
 				return left
@@ -88,14 +62,14 @@ class BinaryTree(object):
 		removes the node from the tree
 		PRECONDITION: the node is a leaf
 		"""
-		if node.getParent() != None:
+		parent = node.getParent()
+		if parent != None:
 			if node.isLeftChild():
-				node.getParent().setLeft(None)
+				self.setLeftChild(parent, None)
 			else:
-				node.getParent().setRight(None)
+				self.setRightChild(parent, None)
 		else:
 			self.root = None
-		node.setParent(None)
 		self.store.pop()
 
 	def setLeftChild(self, parent, child):
@@ -121,25 +95,14 @@ class BinaryTree(object):
 		return self.root
 
 def main():
-	# bt = BinaryTree()
-	# bt.add(3)
-	# bt.add(4)
-	# bt.add(5)
-	# bt.add(1)
-	# bt.add(10)
-	# bt.add(11)
-	# bt.add(3)
-	# bt.add(4)
-	# bt.add(24)
-	# bt.add(34)
-	# bt.add(100)
-	# bt.add(1000)
-	# bt.add(1)
-	# bt.add(2)
-	# bt.add(3)
-	# bt.add(4)
-	# bt.add(5)
-	print(bt.getLastNode().getValue())
+	bt = BinaryTree()
+	bt.add(BinaryNode(3))
+	bt.add(BinaryNode(4))
+	bt.add(BinaryNode(5))
+	bt.add(BinaryNode(6))
+	bt.add(BinaryNode(7))
+	bt.add(BinaryNode(8))
+	print(bt.root.right.left.value)
 
 if __name__ == '__main__':
 	main()

@@ -11,9 +11,9 @@ class Heap(object):
 		reads values from a queue and inputs them into a fillable array
 		"""
 		while not data.isEmpty():
-			self.addNode(data.dequeue())
+			self._addNode(data.dequeue())
 
-	def addNode(self, value):
+	def _addNode(self, value):
 		"""
 		adds the node to the array
 		"""
@@ -51,7 +51,7 @@ class Heap(object):
 		if rightChildIndex < self.size:
 			return rightChildIndex
 
-	def getMaxChildIndex(self, parentIndex):
+	def _getMaxChildIndex(self, parentIndex):
 		"""
 		returns the smallest child of the parent node, None if there is none
 		"""
@@ -74,7 +74,7 @@ class Heap(object):
 		"""
 		return index1 != None and self.store.get(index1) > self.store.get(index2)
 
-	def swapValues(self, index1, index2):
+	def _swapValues(self, index1, index2):
 		"""
 		swaps the values at index 1 and 2
 		"""
@@ -82,21 +82,14 @@ class Heap(object):
 		self.store.setAtIndex(index1, self.store.get(index2))
 		self.store.setAtIndex(index2, temp)
 
-	def prune(self, pruneIndex):
-		"""
-		removes the node from the array
-		PRECONDITION: the node is a leaf
-		"""
-		self.store.removeFromIndex(pruneIndex)
-
 	def heapify(self, currentIndex):
 		"""
 		makes the parent node and its children have the heap property
 		"""
-		swapIndex = self.getMaxChildIndex(currentIndex)
+		swapIndex = self._getMaxChildIndex(currentIndex)
 		if swapIndex != None:
 			# swap the current value and the value of the max child
-			self.swapValues(swapIndex, currentIndex)
+			self._swapValues(swapIndex, currentIndex)
 			# recursively heapify as long as the node has one or more children
 			if self.getLeftIndex(swapIndex) != None or self.getRightIndex(swapIndex) != None:
 				self.heapify(swapIndex)
@@ -113,7 +106,7 @@ class Heap(object):
 			# decrement by 2 in order to check each parent once instead of twice
 			currentIndex -= 2
 
-	def extractMax(self):
+	def _extractMax(self):
 		"""
 		returns the root node and restores the heap property on the rest of the tree
 		"""
@@ -121,7 +114,7 @@ class Heap(object):
 		# decrement the size so already sorted nodes are ignored
 		self.size -= 1
 		# swap the first and last values
-		self.swapValues(self.ROOT_INDEX, self.size)
+		self._swapValues(self.ROOT_INDEX, self.size)
 		# make the new root value go to its proper place
 		self.heapify(self.ROOT_INDEX)
 
@@ -130,22 +123,18 @@ class Heap(object):
 		sorts the heap in ascending order
 		"""
 		for i in range(self.store.getSize()):
-			self.extractMax()
+			self._extractMax()
 		self.size = self.store.getSize()
 		
 
-	def bubbleUp(self, currentIndex):
+	def _bubbleUp(self, currentIndex):
 		"""
 		moves the node up the tree until it is greater than the parent
 		"""
-		while True:
-			parentIndex = self.getParentIndex(currentIndex)
-			# if the current value is greater than the parent value, bubble the current value up
-			if parentIndex != None and self._greaterThan(currentIndex, parentIndex):
-				self.swapValues(currentIndex, parentIndex)
-				currentIndex = parentIndex
-			else:
-				break
+		parentIndex = self.getParentIndex(currentIndex)
+		if parentIndex != None and self._greaterThan(currentIndex, parentIndex):
+			self._swapValues(currentIndex, parentIndex)
+			self._bubbleUp(parentIndex)
 
 	def isCorrect(self):
 		"""
@@ -156,7 +145,7 @@ class Heap(object):
 		while not queue.isEmpty(): 
 			current = queue.dequeue()
 			# if a node has a child greater than it, the tree is not a heap
-			if self.getMaxChildIndex(current) != None:
+			if self._getMaxChildIndex(current) != None:
 				return False
 			lIndex = self.getLeftIndex(current)
 			if lIndex != None:
@@ -170,8 +159,9 @@ class Heap(object):
 		"""
 		inserts the node into the correct place in the heap
 		"""
-		self.addNode(value)
-		self.bubbleUp(self.size-1)
+		self._addNode(value)
+		# the last node is at self.size-1
+		self._bubbleUp(self.size-1)
 
 	def peek(self):
 		"""
