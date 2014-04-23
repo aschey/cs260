@@ -28,7 +28,7 @@ class Heap(object):
 
     def getParentIndex(self, nodeIndex):
         """
-        returns the parent of the node
+        returns the parent of the node 
         """
         # node has no parent if it is the root
         if nodeIndex > self.ROOT_INDEX:

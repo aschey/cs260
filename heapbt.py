@@ -13,16 +13,15 @@ class HeapBT(object):
         reads data from a queue and inserts it into the heap
         """
         queue = QueueSLL()
-        parent = None
-        i = 1
+        rootNode = data.dequeue()
+        self._addNode(rootNode, None)
+        parent = rootNode
         while not data.isEmpty():
             node = data.dequeue()
-            # the parent changes every other leaf
-            if i % 2 == 0:
+            if parent.getRight() != None:
                 parent = queue.dequeue()
             queue.enqueue(node)
             self._addNode(node, parent)
-            i += 1
 
     def _addNode(self, node, parent):
         """
@@ -65,28 +64,21 @@ class HeapBT(object):
         returns the root node and restores the heap property on the rest of the tree
         """
         root = self.store.getRoot()
-        # if root is None, the tree is empty
-        if root == None:
-            return
+        # save the root value before it gets overwritten
+        rootValue = root.getValue()
         pruneNode = self.store.getLastNode()
-        # remove the last node
-        self.store.prune(pruneNode)
-        # swap the first and last values
-        #self.store.swapValues(root, pruneNode)
         root.setValue(pruneNode.getValue())
-        # put the new root value in its proper place
+        self.store.prune(pruneNode)
         self.heapify(root)
-        return pruneNode.getValue()
+        return rootValue
 
     def sort(self):
         """
         performs a heapsort
         """
         queue = QueueSLL()
-        while True:
+        while self.store.getRoot() != None:
             minVal = self.extract()
-            if minVal == None:
-                break
             queue.enqueue(minVal)
         return queue
 
@@ -123,28 +115,7 @@ class HeapBT(object):
         return self.store.getRoot() == None 
 
 def main():
-    heap = HeapBT()
-    queue = QueueSLL()
-    for i in range(10):
-        queue.enqueue(BinaryNode(i))
-    heap.readData(queue)
-    heap.buildHeap()
-    queue = heap.sort()
-    for i in range(10):
-        print(queue.dequeue())
-    #while not heap.store.store.isEmpty():
-    #       print(heap.store.store.dequeue().value)
-    # heap.buildHeap()
-    # heap.insert(2)
-    # #heap.insert(10)
-    # #heap.insert(1)
-    # stack = heap.store.levelOrderTraverse()
-    # while not stack.isEmpty():
-    #       print(stack.pop().getValue())
-    # print(heap.isCorrect())
-    # #while not queue.isEmpty():
-    # #     print(queue.dequeue())
-    
+    pass
 
 if __name__ == '__main__':
     main()
