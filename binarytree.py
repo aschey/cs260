@@ -23,7 +23,6 @@ class BinaryTree(object):
 		"""
 		returns the last node in the tree
 		"""
-		#return self.store.get(self.store.getSize()-1)
 		return self.store.peek()
 
 	def swapValues(self, node1, node2):

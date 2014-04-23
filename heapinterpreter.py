@@ -88,7 +88,8 @@ while True:
     print("s: sort data in ascending order")
     print("v: visualize with graphviz")
     print("t: test for correctness")
-    print("e: exit")
+    print("e: extract min")
+    print("q: exit")
     print()
 
     command = input("input a command: ")
@@ -97,8 +98,11 @@ while True:
 
     option = command[0]
     
-    if option == "e":
+    if option == "q":
         exit()
+
+    elif option == "e":
+        print(heap.extract())
 
     elif option == "b":
         heap = HeapBT()
